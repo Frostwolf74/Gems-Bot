@@ -1,4 +1,3 @@
-import sys
 import os
 import signal
 
@@ -92,14 +91,14 @@ async def on_ready():
     print("Ready")
 
 
-@bot.command
-async def kill(ctx):
-    if ctx.user.id != 670821194550870016:
-        await ctx.channel.send(
+@bot.command()
+async def kill(ctx: discord.ext.commands.Context):
+    if ctx.author.id != 670821194550870016:
+        await ctx.send(
             "Youre not frostwolf74, you cannot use this command.")
         return
 
-    await ctx.channel.send("Sending SIGTERM to self")
+    await ctx.send("Sending SIGTERM to self")
     os.kill(os.getpid(), signal.SIGTERM)
 
 
