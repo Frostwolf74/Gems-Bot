@@ -34,8 +34,14 @@ def deserialize_gem_list():
 async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
     msg = await (await bot.fetch_channel(event.channel_id)).fetch_message(event.message_id)
 
-    # # count coal reacts
-    # react_count = 0
+    gem_channel_id = 1422572871019921569
+    gem_limit = 2
+    coal_limit = 5
+    excluded_channels = []
+    coal_emoji_id = "1374148035914764309"
+
+    # count coal reacts
+    react_count = 0
     # count gem reacts
     gem_react_count = 0
     gem_list = deserialize_gem_list()
@@ -44,20 +50,19 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
             gem_react_count = reaction.count
             break
 
-        # if "1374148035914764309" in str(reaction.emoji):
-        #     react_count = reaction.count
-        #     break
+        if coal_emoji_id in str(reaction.emoji):
+            react_count = reaction.count
+            break
 
-    # # prevent it from deleting from important channels
-    # if react_count >= 5 and msg.channel.id not in [1167614611739136030, 1175632125534408844, 1331347644508930180, 1139816339213647923, 1093266096620044419, 1284274880480804958, 1347030545628135496]:
-    #     print(str(msg.id) + " deleted | coals: " + str(react_count) + " | short id: " + str(msg.id)[0] + str(msg.id)[1])
-    #     await msg.channel.send("https://tenor.com/view/cinema-zoolander-ben-stiller-coal-miner-gif-15796484", reference=msg)
-    #     await msg.delete()
+    # prevent it from deleting from important channels
+    if react_count >= coal_limit and msg.channel.id not in excluded_channels:
+        print(str(msg.id) + " deleted | coals: " + str(react_count) + " | short id: " + str(msg.id)[0] + str(msg.id)[1])
+        await msg.delete()
 
-    if gem_react_count >= 2 and msg.channel.id and msg.id not in gem_list and msg.author.id != bot.user.id:
+    if gem_react_count >= gem_limit and msg.channel.id not in excluded_channels and msg.id not in gem_list and msg.author.id != bot.user.id:
         print(str(msg.id) + " added to gem board | gems: " + str(gem_react_count) + " | short id: " + str(msg.id)[0] + str(msg.id)[1])
 
-        gem_channel = bot.get_channel(1422572871019921569)
+        gem_channel = bot.get_channel(gem_channel_id)
         current_channel = bot.get_channel(event.channel_id)
         embed = discord.Embed(colour=event.member.colour, timestamp=msg.created_at)
 
@@ -69,13 +74,12 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
         if len(msg.attachments) > 0:
             embed.set_image(url=msg.attachments[0].url)
 
-        embed.add_field(name="", value=f"-# [jump to message]({msg.jump_url})", inline=False)
-
         gem_list.append(msg.id)
         serialize_gem_list(gem_list)
 
-        await gem_channel.send(embed=embed)
         await current_channel.send(embed=embed, reference=msg)
+        embed.add_field(name="", value=f"-# [jump to message]({msg.jump_url})", inline=False)
+        await gem_channel.send(embed=embed)
 
 
 @bot.event
