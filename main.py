@@ -30,6 +30,20 @@ def deserialize_gem_list():
         return []
 
 
+def serialize_pinned_list(gem_list):
+    with open("pinned_list.txt", "w") as f:
+        for msg_id in gem_list:
+            f.write(str(msg_id) + "\n")
+
+
+def deserialize_pinned_list():
+    try:
+        with open("pinned_list.txt", "r") as f:
+            return [int(line.strip()) for line in f.readlines()]
+    except FileNotFoundError:
+        return []
+
+
 @bot.event
 async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
     msg = await (await bot.fetch_channel(event.channel_id)).fetch_message(event.message_id)
@@ -37,6 +51,7 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
     gem_channel_id = 1422572871019921569
     gem_limit = 2
     coal_limit = 5
+    pin_react_limit = 5
     excluded_channels = []
     coal_emoji_id = "1374148035914764309"
 
@@ -45,6 +60,7 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
     # count gem reacts
     gem_react_count = 0
     gem_list = deserialize_gem_list()
+    pinned_list = deserialize_pinned_list()
     for reaction in msg.reactions:
         if reaction.emoji == "💎":
             gem_react_count = reaction.count
@@ -80,6 +96,12 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
         await current_channel.send(embed=embed, reference=msg)
         embed.add_field(name="", value=f"-# [jump to message]({msg.jump_url})", inline=False)
         await gem_channel.send(embed=embed)
+
+    if gem_react_count >= pin_react_limit and msg.channel.id not in excluded_channels and pinned_list and msg.author.id != bot.user.id:
+        pinned_list.append(msg.id)
+        serialize_pinned_list(pinned_list)
+
+        await msg.pin()
 
 
 @bot.event
