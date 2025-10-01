@@ -97,11 +97,15 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
         embed.add_field(name="", value=f"-# [jump to message]({msg.jump_url})", inline=False)
         await gem_channel.send(embed=embed)
 
-    if gem_react_count >= pin_react_limit and msg.channel.id not in excluded_channels and pinned_list and msg.author.id != bot.user.id:
+    if gem_react_count >= pin_react_limit and msg.channel.id not in excluded_channels and msg.id not in pinned_list and msg.author.id != bot.user.id:
         pinned_list.append(msg.id)
         serialize_pinned_list(pinned_list)
+        print(str(msg.id) + " pinned | gems: " + str(gem_react_count) + " | short id: " + str(msg.id)[0] + str(msg.id)[1])
 
-        await msg.pin()
+        try:
+            await msg.pin()
+        except Exception as e:
+            print(e)
 
 
 @bot.event
