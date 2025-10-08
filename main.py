@@ -1,4 +1,5 @@
 import os
+import re
 import signal
 
 import discord
@@ -90,9 +91,21 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
         gem_list.append(msg.id)
         serialize_gem_list(gem_list)
 
-        if len(msg.attachments) > 0:
-            embed.set_image(url=msg.attachments[0].url)
+        gif_patterns = [
+            r'https?://(?:www\.)?tenor\.com/view/[\w-]+',
+            r'https?://(?:www\.)?gfycat\.com/[\w-]+',
+            r'https?://media\d?\.giphy\.com/media/[\w-]+/giphy\.gif',
+            r'.*\.gif(?:$|\?.*)'
+        ]
 
+        is_gif = False
+
+        for pattern in gif_patterns:
+            if re.search(pattern, msg.content):
+                is_gif = True
+                break
+
+        if len(msg.attachments) > 0:
             if msg.attachments[0].content_type == "video/mp4" or msg.attachments[0].content_type == "video/quicktime":
                 files = []
                 for attachment in msg.attachments:
@@ -110,7 +123,12 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
                 await current_channel.send(files=files, embed=embed, reference=msg)
                 embed.add_field(name="", value=f"-# [jump to message]({msg.jump_url})", inline=False)
                 await gem_channel.send(files=files1, embed=embed)
+        elif is_gif:
+            await current_channel.send(content=msg.content, embed=embed, reference=msg)
+            embed.add_field(name="", value=f"-# [jump to message]({msg.jump_url})", inline=False)
+            await gem_channel.send(content=msg.content, embed=embed)
         else:
+            embed.set_image(url=msg.attachments[0].url)
             await current_channel.send(embed=embed, reference=msg)
             embed.add_field(name="", value=f"-# [jump to message]({msg.jump_url})", inline=False)
             await gem_channel.send(embed=embed)
