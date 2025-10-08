@@ -48,7 +48,7 @@ def deserialize_pinned_list():
 async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
     msg = await (await bot.fetch_channel(event.channel_id)).fetch_message(event.message_id)
     gem_channel_id = 1422572871019921569
-    gem_limit = 2
+    gem_limit = 1
     coal_limit = 5
     pin_react_limit = 5
     excluded_channels = []
@@ -76,7 +76,7 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
         await msg.delete()
 
     if gem_react_count >= gem_limit and msg.channel.id not in excluded_channels and msg.id not in gem_list and msg.author.id != bot.user.id:
-        print(str(msg.id) + " added to gem board | gems: " + str(gem_react_count) + " | short id: " + str(msg.id)[0] + str(msg.id)[1] + str(msg.id)[len(str(msg)) - 2] + str(msg.id)[len(str(msg)) - 1])
+        print(str(msg.id) + " added to gem board | gems: " + str(gem_react_count) + " | short id: " + str(msg.id)[0] + str(msg.id)[1] + str(msg.id)[len(str(msg.id)) - 2] + str(msg.id)[len(str(msg.id)) - 1])
 
         gem_channel = bot.get_channel(gem_channel_id)
         current_channel = bot.get_channel(event.channel_id)
