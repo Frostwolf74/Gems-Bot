@@ -124,9 +124,11 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
                 embed.add_field(name="", value=f"-# [jump to message]({msg.jump_url})", inline=False)
                 await gem_channel.send(files=files1, embed=embed)
         elif is_gif:
-            await current_channel.send(content=msg.content, embed=embed, reference=msg)
+            await current_channel.send(content=msg.content, reference=msg)
+            await current_channel.send(embed=embed)
             embed.add_field(name="", value=f"-# [jump to message]({msg.jump_url})", inline=False)
-            await gem_channel.send(content=msg.content, embed=embed)
+            await gem_channel.send(content=msg.content)
+            await gem_channel.send(embed=embed)
         else:
             embed.set_image(url=msg.attachments[0].url)
             await current_channel.send(embed=embed, reference=msg)
