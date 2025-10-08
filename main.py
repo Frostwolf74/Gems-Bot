@@ -48,7 +48,7 @@ def deserialize_pinned_list():
 async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
     msg = await (await bot.fetch_channel(event.channel_id)).fetch_message(event.message_id)
     gem_channel_id = 1422572871019921569
-    gem_limit = 1
+    gem_limit = 2
     coal_limit = 5
     pin_react_limit = 5
     excluded_channels = []
@@ -93,7 +93,7 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
         gem_list.append(msg.id)
         serialize_gem_list(gem_list)
 
-        if msg.attachments[0].content_type == "video/mp4" or "video/quicktime":
+        if msg.attachments[0].content_type == "video/mp4" or msg.attachments[0].content_type == "video/quicktime":
             files = []
             for attachment in msg.attachments:
                 file = await attachment.to_file()
