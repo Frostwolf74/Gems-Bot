@@ -87,29 +87,29 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
         if len(msg.content) > 0:
             embed.add_field(name="", value=msg.content)
 
-        if len(msg.attachments) > 0:
-            embed.set_image(url=msg.attachments[0].url)
-
         gem_list.append(msg.id)
         serialize_gem_list(gem_list)
 
-        if msg.attachments[0].content_type == "video/mp4" or msg.attachments[0].content_type == "video/quicktime":
-            files = []
-            for attachment in msg.attachments:
-                file = await attachment.to_file()
-                file.spoiler = attachment.is_spoiler()
-                files.append(file)
+        if len(msg.attachments) > 0:
+            embed.set_image(url=msg.attachments[0].url)
 
-            files1 = []
+            if msg.attachments[0].content_type == "video/mp4" or msg.attachments[0].content_type == "video/quicktime":
+                files = []
+                for attachment in msg.attachments:
+                    file = await attachment.to_file()
+                    file.spoiler = attachment.is_spoiler()
+                    files.append(file)
 
-            for attachment in msg.attachments:
-                file = await attachment.to_file()
-                file.spoiler = attachment.is_spoiler()
-                files1.append(file)
+                files1 = []
 
-            await current_channel.send(files=files, embed=embed, reference=msg)
-            embed.add_field(name="", value=f"-# [jump to message]({msg.jump_url})", inline=False)
-            await gem_channel.send(files=files1, embed=embed)
+                for attachment in msg.attachments:
+                    file = await attachment.to_file()
+                    file.spoiler = attachment.is_spoiler()
+                    files1.append(file)
+
+                await current_channel.send(files=files, embed=embed, reference=msg)
+                embed.add_field(name="", value=f"-# [jump to message]({msg.jump_url})", inline=False)
+                await gem_channel.send(files=files1, embed=embed)
         else:
             await current_channel.send(embed=embed, reference=msg)
             embed.add_field(name="", value=f"-# [jump to message]({msg.jump_url})", inline=False)
