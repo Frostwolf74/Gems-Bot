@@ -47,9 +47,8 @@ def deserialize_pinned_list():
 @bot.event
 async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
     msg = await (await bot.fetch_channel(event.channel_id)).fetch_message(event.message_id)
-
     gem_channel_id = 1422572871019921569
-    gem_limit = 2
+    gem_limit = 1
     coal_limit = 5
     pin_react_limit = 5
     excluded_channels = []
@@ -59,6 +58,7 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
     react_count = 0
     # count gem reacts
     gem_react_count = 0
+    files = []
     gem_list = deserialize_gem_list()
     pinned_list = deserialize_pinned_list()
     for reaction in msg.reactions:
@@ -81,6 +81,7 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
         gem_channel = bot.get_channel(gem_channel_id)
         current_channel = bot.get_channel(event.channel_id)
         embed = discord.Embed(colour=event.member.colour, timestamp=msg.created_at)
+        message_body = None
 
         embed.set_author(name=msg.author.display_name, icon_url=msg.author.avatar)
 
@@ -93,9 +94,21 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
         gem_list.append(msg.id)
         serialize_gem_list(gem_list)
 
-        await current_channel.send(embed=embed, reference=msg)
-        embed.add_field(name="", value=f"-# [jump to message]({msg.jump_url})", inline=False)
-        await gem_channel.send(embed=embed)
+        if msg.attachments[0].content_type == "video/mp4" or "video/quicktime":
+            files = []
+            for attachment in msg.attachments:
+                file = await attachment.to_file()
+                file.spoiler = attachment.is_spoiler()
+                files.append(file)
+
+            await current_channel.send(files=files, embed=embed, reference=msg)
+            embed.add_field(name="", value=f"-# [jump to message]({msg.jump_url})", inline=False)
+            await gem_channel.send(files=files, embed=embed)
+        else:
+            await current_channel.send(embed=embed, reference=msg)
+            embed.add_field(name="", value=f"-# [jump to message]({msg.jump_url})", inline=False)
+            await gem_channel.send(embed=embed)
+
 
     if gem_react_count >= pin_react_limit and msg.channel.id not in excluded_channels and msg.id not in pinned_list and msg.author.id != bot.user.id:
         pinned_list.append(msg.id)
