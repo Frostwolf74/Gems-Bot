@@ -80,7 +80,7 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
 
         gem_channel = bot.get_channel(gem_channel_id)
         current_channel = bot.get_channel(event.channel_id)
-        embed = discord.Embed(colour=event.member.colour, timestamp=msg.created_at)
+        embed = discord.Embed(colour=msg.author.color, timestamp=msg.created_at)
 
         embed.set_author(name=msg.author.display_name, icon_url=msg.author.avatar)
 
