@@ -76,7 +76,7 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
         await msg.delete()
 
     if gem_react_count >= gem_limit and msg.channel.id not in excluded_channels and msg.id not in gem_list and msg.author.id != bot.user.id:
-        print(str(msg.id) + " added to gem board | gems: " + str(gem_react_count) + " | short id: " + str(msg.id)[0] + str(msg.id)[1])
+        print(str(msg.id) + " added to gem board | gems: " + str(gem_react_count) + " | short id: " + str(msg.id)[0] + str(msg.id)[1] + str(msg.id)[len(str(msg)) - 2] + str(msg.id)[len(str(msg)) - 1])
 
         gem_channel = bot.get_channel(gem_channel_id)
         current_channel = bot.get_channel(event.channel_id)
