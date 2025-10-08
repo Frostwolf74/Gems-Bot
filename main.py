@@ -85,9 +85,6 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
 
         embed.set_author(name=msg.author.display_name, icon_url=msg.author.avatar)
 
-        if len(msg.content) > 0:
-            embed.add_field(name="", value=msg.content)
-
         gem_list.append(msg.id)
         serialize_gem_list(gem_list)
 
@@ -104,6 +101,9 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
             if re.search(pattern, msg.content):
                 is_gif = True
                 break
+
+        if len(msg.content) > 0 and not is_gif:
+            embed.add_field(name="", value=msg.content)
 
         if len(msg.attachments) > 0:
             if msg.attachments[0].content_type == "video/mp4" or msg.attachments[0].content_type == "video/quicktime":
