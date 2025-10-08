@@ -49,7 +49,7 @@ def deserialize_pinned_list():
 async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
     msg = await (await bot.fetch_channel(event.channel_id)).fetch_message(event.message_id)
     gem_channel_id = 1422572871019921569
-    gem_limit = 1
+    gem_limit = 2
     coal_limit = 5
     pin_react_limit = 5
     excluded_channels = []
@@ -74,6 +74,7 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
     # prevent it from deleting from important channels
     if react_count >= coal_limit and msg.channel.id not in excluded_channels:
         print(str(msg.id) + " deleted | coals: " + str(react_count) + " | short id: " + str(msg.id)[0] + str(msg.id)[1])
+        await msg.channel.send("HWABAG or some sh", reference=msg)
         await msg.delete()
 
     if gem_react_count >= gem_limit and msg.channel.id not in excluded_channels and msg.id not in gem_list and msg.author.id != bot.user.id:
@@ -84,9 +85,6 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
         embed = discord.Embed(colour=msg.author.color, timestamp=msg.created_at)
 
         embed.set_author(name=msg.author.display_name, icon_url=msg.author.avatar)
-
-        gem_list.append(msg.id)
-        serialize_gem_list(gem_list)
 
         gif_patterns = [
             r'https?://(?:www\.)?tenor\.com/view/[\w-]+',
@@ -114,7 +112,6 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
                     files.append(file)
 
                 files1 = []
-
                 for attachment in msg.attachments:
                     file = await attachment.to_file()
                     file.spoiler = attachment.is_spoiler()
@@ -130,17 +127,16 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
                 await gem_channel.send(embed=embed)
         elif is_gif:
             await current_channel.send(content=msg.content, reference=msg)
-            await current_channel.send(embed=embed)
             embed.add_field(name="", value=f"-# [jump to message]({msg.jump_url})", inline=False)
-            await gem_channel.send(content=msg.content)
             await gem_channel.send(embed=embed)
+            await gem_channel.send(content=msg.content)
         else:
             await current_channel.send(embed=embed, reference=msg)
             embed.add_field(name="", value=f"-# [jump to message]({msg.jump_url})", inline=False)
             await gem_channel.send(embed=embed)
 
-
-
+        gem_list.append(msg.id)
+        serialize_gem_list(gem_list)
 
     if gem_react_count >= pin_react_limit and msg.channel.id not in excluded_channels and msg.id not in pinned_list and msg.author.id != bot.user.id:
         pinned_list.append(msg.id)
