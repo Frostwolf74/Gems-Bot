@@ -123,6 +123,11 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
                 await current_channel.send(files=files, embed=embed, reference=msg)
                 embed.add_field(name="", value=f"-# [jump to message]({msg.jump_url})", inline=False)
                 await gem_channel.send(files=files1, embed=embed)
+            else:
+                embed.set_image(url=msg.attachments[0].url)
+                await current_channel.send(embed=embed, reference=msg)
+                embed.add_field(name="", value=f"-# [jump to message]({msg.jump_url})", inline=False)
+                await gem_channel.send(embed=embed)
         elif is_gif:
             await current_channel.send(content=msg.content, reference=msg)
             await current_channel.send(embed=embed)
@@ -130,10 +135,11 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
             await gem_channel.send(content=msg.content)
             await gem_channel.send(embed=embed)
         else:
-            embed.set_image(url=msg.attachments[0].url)
             await current_channel.send(embed=embed, reference=msg)
             embed.add_field(name="", value=f"-# [jump to message]({msg.jump_url})", inline=False)
             await gem_channel.send(embed=embed)
+
+
 
 
     if gem_react_count >= pin_react_limit and msg.channel.id not in excluded_channels and msg.id not in pinned_list and msg.author.id != bot.user.id:
