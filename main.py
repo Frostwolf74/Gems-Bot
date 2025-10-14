@@ -50,7 +50,7 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
     msg = await (await bot.fetch_channel(event.channel_id)).fetch_message(event.message_id)
     gem_channel_id = 1422572871019921569
     gem_limit = 2
-    coal_limit = 1
+    coal_limit = 5
     pin_react_limit = 5
     excluded_channels = []
     coal_emoji_id = "1420615710681469102"
