@@ -117,9 +117,20 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
                     file.spoiler = attachment.is_spoiler()
                     files1.append(file)
 
-                await current_channel.send(files=files, embed=embed, reference=msg)
-                embed.add_field(name="", value=f"-# [jump to message]({msg.jump_url})", inline=False)
-                await gem_channel.send(files=files1, embed=embed)
+                try:
+                    await current_channel.send(files=files, embed=embed, reference=msg)
+                    embed.add_field(name="", value=f"-# [jump to message]({msg.jump_url})", inline=False)
+                    await gem_channel.send(files=files1, embed=embed)
+                except discord.errors.HTTPException: # file too big
+                    attachments = ""
+                    for attachment in msg.attachments:
+                        attachments += attachment.url + "\n"
+
+                    await current_channel.send(embed=embed, reference=msg)
+                    await current_channel.send(attachments)
+                    embed.add_field(name="", value=f"-# [jump to message]({msg.jump_url})", inline=False)
+                    await gem_channel.send(embed=embed)
+                    await gem_channel.send(attachments)
             else:
                 embed.set_image(url=msg.attachments[0].url)
                 await current_channel.send(embed=embed, reference=msg)
