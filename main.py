@@ -49,7 +49,8 @@ def deserialize_pinned_list():
 async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
     msg = await (await bot.fetch_channel(event.channel_id)).fetch_message(event.message_id)
     gem_channel_id = 1422572871019921569
-    gem_limit = 2
+    attachment_cloud_id = 1429688927601823804
+    gem_limit = 1
     coal_limit = 5
     pin_react_limit = 5
     excluded_channels = []
@@ -82,6 +83,7 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
 
         gem_channel = bot.get_channel(gem_channel_id)
         current_channel = bot.get_channel(event.channel_id)
+        attachment_cloud = bot.get_channel(attachment_cloud_id)
         embed = discord.Embed(colour=msg.author.color, timestamp=msg.created_at)
 
         embed.set_author(name=msg.author.display_name, icon_url=msg.author.avatar)
@@ -100,11 +102,11 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
                 is_gif = True
                 break
 
-        if len(msg.content) > 0 and not is_gif:
+        if len(msg.content) > 0 and not is_gif: # message text
             embed.add_field(name="", value=msg.content)
 
         if len(msg.attachments) > 0:
-            if msg.attachments[0].content_type == "video/mp4" or msg.attachments[0].content_type == "video/quicktime":
+            if msg.attachments[0].content_type == "video/mp4" or msg.attachments[0].content_type == "video/quicktime": # webm
                 files = []
                 for attachment in msg.attachments:
                     file = await attachment.to_file()
@@ -132,7 +134,8 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
                     await gem_channel.send(embed=embed)
                     await gem_channel.send(attachments)
             else:
-                embed.set_image(url=msg.attachments[0].url)
+                message = await attachment_cloud.send(file=await msg.attachments[0].to_file())
+                embed.set_image(url=message.attachments[0].url)
                 # await current_channel.send(embed=embed, reference=msg)
                 embed.add_field(name="", value=f"-# [jump to message]({msg.jump_url})", inline=False)
                 await gem_channel.send(embed=embed)
