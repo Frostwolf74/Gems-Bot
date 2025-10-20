@@ -118,7 +118,7 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
                     files1.append(file)
 
                 try:
-                    await current_channel.send(files=files, embed=embed, reference=msg)
+                    # await current_channel.send(files=files, embed=embed, reference=msg)
                     embed.add_field(name="", value=f"-# [jump to message]({msg.jump_url})", inline=False)
                     await gem_channel.send(files=files1, embed=embed)
                 except discord.errors.HTTPException: # file too big
@@ -126,23 +126,23 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
                     for attachment in msg.attachments:
                         attachments += attachment.url + "\n"
 
-                    await current_channel.send(embed=embed, reference=msg)
-                    await current_channel.send(attachments)
+                    # await current_channel.send(embed=embed, reference=msg)
+                    # await current_channel.send(attachments)
                     embed.add_field(name="", value=f"-# [jump to message]({msg.jump_url})", inline=False)
                     await gem_channel.send(embed=embed)
                     await gem_channel.send(attachments)
             else:
                 embed.set_image(url=msg.attachments[0].url)
-                await current_channel.send(embed=embed, reference=msg)
+                # await current_channel.send(embed=embed, reference=msg)
                 embed.add_field(name="", value=f"-# [jump to message]({msg.jump_url})", inline=False)
                 await gem_channel.send(embed=embed)
         elif is_gif:
-            await current_channel.send(content=msg.content, reference=msg)
+            # await current_channel.send(content=msg.content, reference=msg)
             embed.add_field(name="", value=f"-# [jump to message]({msg.jump_url})", inline=False)
             await gem_channel.send(embed=embed)
             await gem_channel.send(content=msg.content)
         else:
-            await current_channel.send(embed=embed, reference=msg)
+            # await current_channel.send(embed=embed, reference=msg)
             embed.add_field(name="", value=f"-# [jump to message]({msg.jump_url})", inline=False)
             await gem_channel.send(embed=embed)
 
