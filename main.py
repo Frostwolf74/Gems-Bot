@@ -1,3 +1,4 @@
+import ast
 import os
 import re
 import signal
@@ -15,6 +16,9 @@ intents.members = True
 intents.message_content = True
 
 bot = commands.Bot(command_prefix='​', intents=intents)
+
+# server.id: gem_channel
+servers = {}
 
 
 def serialize_gem_list(gem_list):
@@ -44,12 +48,37 @@ def deserialize_pinned_list():
     except FileNotFoundError:
         return []
 
+@bot.command()
+async def kill(ctx: discord.ext.commands.Context):
+    if ctx.author.id != 670821194550870016:
+        await ctx.send(
+            "Youre not frostwolf74, you cannot use this command.")
+        return
+
+    await ctx.send("Killing myself")
+    os.kill(os.getpid(), signal.SIGTERM)
+
+
+@bot.tree.command(
+    name="set-channel",
+    description="set the channel gem reacted posts will be posted in"
+)
+async def set_channel(interaction: discord.Interaction, channel: discord.TextChannel):
+    global servers
+
+    servers.update({channel.guild.id: channel.id})
+
+    with open("servers.txt", "w") as f:
+        f.write(str(servers))
+
+    await interaction.response.send_message("Gem channel set")
 
 @bot.event
 async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
     msg = await (await bot.fetch_channel(event.channel_id)).fetch_message(event.message_id)
-    gem_channel_id = 1422572871019921569
-    attachment_cloud_id = 1429688927601823804
+    global servers
+    gem_channel_id = servers.get(msg.guild.id)
+    attachment_cloud_id = 1429688927601823804 # for ensuring images are saved correctly without local storage
     gem_limit = 2
     coal_limit = 5
     pin_react_limit = 5
@@ -169,22 +198,27 @@ async def on_ready():
 
     await bot.tree.sync()
     for command in bot.commands:
-        print(command)
+        print(command.name)
     for command in bot.tree.get_commands():
-        print(command)
+        print(command.name)
+
+    print("Syncing servers")
+    global servers
+
+    if "servers.txt" not in os.listdir(os.getcwd()):
+        open("servers.txt", "w").close()
+
+    # read existing server configuration into servers dictionary
+    # server.id: gem_channel <- servers.txt
+    with open("servers.txt", "r+") as servers_file:
+        read = servers_file.read()
+        if read != "":
+            servers = ast.literal_eval(read) # interpret as dictionary when reading
+
+    for server in servers:
+        print(str(server) + ": " + str(servers.get(server)))  # to verify the dictionary is populated with the correct servers
 
     print("Ready")
-
-
-@bot.command()
-async def kill(ctx: discord.ext.commands.Context):
-    if ctx.author.id != 670821194550870016:
-        await ctx.send(
-            "Youre not frostwolf74, you cannot use this command.")
-        return
-
-    await ctx.send("Sending SIGTERM to self")
-    os.kill(os.getpid(), signal.SIGTERM)
 
 
 @bot.event
