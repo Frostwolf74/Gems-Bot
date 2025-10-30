@@ -65,6 +65,10 @@ async def gemskill(ctx: discord.ext.commands.Context):
     description="set the channel gem reacted posts will be posted in"
 )
 async def set_channel(interaction: discord.Interaction, channel: discord.TextChannel):
+    if interaction.user.id != 670821194550870016:
+        await interaction.response.send_message("Youre not Frostwolf74, you cannot use this command.")
+        return
+
     global servers
 
     servers.update({channel.guild.id: channel.id})
@@ -79,8 +83,19 @@ async def set_channel(interaction: discord.Interaction, channel: discord.TextCha
     name="set-coal",
     description="set the coal emoji id"
 )
-async def set_coal(interaction: discord.Interaction, emoji_id: int):
+async def set_coal(interaction: discord.Interaction, emoji_id: str):
+    if interaction.user.id != 670821194550870016:
+        await interaction.response.send_message("Youre not Frostwolf74, you cannot use this command.")
+        return
+
     global servers_coal
+
+    servers_coal.update({interaction.guild.id: emoji_id})
+
+    with open("coals.txt", "w") as f:
+        f.write(str(servers_coal))
+
+    await interaction.response.send_message("Coal emoji set")
 
 
 @bot.event
@@ -90,10 +105,11 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
     gem_channel_id = servers.get(msg.guild.id)
     attachment_cloud_id = 1429688927601823804 # for ensuring images are saved correctly without local storage
     gem_limit = 2
-    coal_limit = 5
+    coal_limit = 1
     pin_react_limit = 5
     excluded_channels = []
-    coal_emoji_id = "1420615710681469102"
+    global servers_coal
+    coal_emoji_id = servers_coal.get(event.guild_id)
 
     # count coal reacts
     react_count = 0
@@ -107,7 +123,7 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
             gem_react_count = reaction.count
             break
 
-        if coal_emoji_id in str(reaction.emoji):
+        if coal_emoji_id is not None and coal_emoji_id in str(reaction.emoji):
             react_count = reaction.count
             break
 
@@ -214,9 +230,13 @@ async def on_ready():
 
     print("Syncing servers")
     global servers
+    global servers_coal
 
     if "servers.txt" not in os.listdir(os.getcwd()):
         open("servers.txt", "w").close()
+
+    if "coals.txt" not in os.listdir(os.getcwd()):
+        open("coals.txt", "w").close()
 
     # read existing server configuration into servers dictionary
     # server.id: gem_channel <- servers.txt
@@ -225,8 +245,12 @@ async def on_ready():
         if read != "":
             servers = ast.literal_eval(read) # interpret as dictionary when reading
 
-    for server in servers:
-        print(str(server) + ": " + str(servers.get(server)))  # to verify the dictionary is populated with the correct servers
+    # read existing coal emoji ids into servers_coal dictionary
+    # server.id: coal_emoji_id <- coals.txt
+    with open("coals.txt", "r+") as coals_file:
+        read = coals_file.read()
+        if read != "":
+            servers_coal = ast.literal_eval(read)
 
     print("Ready")
 
