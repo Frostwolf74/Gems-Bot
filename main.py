@@ -19,37 +19,38 @@ bot = commands.Bot(command_prefix='​', intents=intents)
 
 # server.id: gem_channel
 servers = {}
+servers_coal = {}
 
 
-def serialize_gem_list(gem_list):
-    with open("gem_board.txt", "w") as f:
+def serialize_gem_list(gem_list, server_id):
+    with open("gem_board-" + str(server_id) + ".txt", "w") as f:
         for msg_id in gem_list:
             f.write(str(msg_id) + "\n")
 
 
-def deserialize_gem_list():
+def deserialize_gem_list(server_id):
     try:
-        with open("gem_board.txt", "r") as f:
+        with open("gem_board-" + str(server_id) + ".txt", "r") as f:
             return [int(line.strip()) for line in f.readlines()]
     except FileNotFoundError:
         return []
 
 
-def serialize_pinned_list(gem_list):
-    with open("pinned_list.txt", "w") as f:
-        for msg_id in gem_list:
+def serialize_pinned_list(pinned_list, server_id):
+    with open("pinned_list-" + str(server_id) + ".txt", "w") as f:
+        for msg_id in pinned_list:
             f.write(str(msg_id) + "\n")
 
 
-def deserialize_pinned_list():
+def deserialize_pinned_list(server_id):
     try:
-        with open("pinned_list.txt", "r") as f:
+        with open("pinned_list-" + str(server_id) + ".txt", "r") as f:
             return [int(line.strip()) for line in f.readlines()]
     except FileNotFoundError:
         return []
 
 @bot.command()
-async def kill(ctx: discord.ext.commands.Context):
+async def gemskill(ctx: discord.ext.commands.Context):
     if ctx.author.id != 670821194550870016:
         await ctx.send(
             "Youre not frostwolf74, you cannot use this command.")
@@ -73,6 +74,15 @@ async def set_channel(interaction: discord.Interaction, channel: discord.TextCha
 
     await interaction.response.send_message("Gem channel set")
 
+
+@bot.tree.command(
+    name="set-coal",
+    description="set the coal emoji id"
+)
+async def set_coal(interaction: discord.Interaction, emoji_id: int):
+    global servers_coal
+
+
 @bot.event
 async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
     msg = await (await bot.fetch_channel(event.channel_id)).fetch_message(event.message_id)
@@ -90,8 +100,8 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
     # count gem reacts
     gem_react_count = 0
     files = []
-    gem_list = deserialize_gem_list()
-    pinned_list = deserialize_pinned_list()
+    gem_list = deserialize_gem_list(event.guild_id)
+    pinned_list = deserialize_pinned_list(event.guild_id)
     for reaction in msg.reactions:
         if reaction.emoji == "💎":
             gem_react_count = reaction.count
@@ -179,11 +189,11 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
             await gem_channel.send(embed=embed)
 
         gem_list.append(msg.id)
-        serialize_gem_list(gem_list)
+        serialize_gem_list(gem_list, event.guild_id)
 
     if gem_react_count >= pin_react_limit and msg.channel.id not in excluded_channels and msg.id not in pinned_list and msg.author.id != bot.user.id:
         pinned_list.append(msg.id)
-        serialize_pinned_list(pinned_list)
+        serialize_pinned_list(pinned_list, event.guild_id)
         print(str(msg.id) + " pinned | gems: " + str(gem_react_count) + " | short id: " + str(msg.id)[0] + str(msg.id)[1])
 
         try:
