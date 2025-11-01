@@ -117,7 +117,7 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
     global servers
     gem_channel_id = servers.get(msg.guild.id)
     attachment_cloud_id = 1429688927601823804 # for ensuring images are saved correctly without local storage
-    gem_limit = 1
+    gem_limit = 2
     coal_limit = 5
     pin_react_limit = 5
     excluded_channels = []
