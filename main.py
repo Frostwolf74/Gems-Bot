@@ -117,7 +117,7 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
     global servers
     gem_channel_id = servers.get(msg.guild.id)
     attachment_cloud_id = 1429688927601823804 # for ensuring images are saved correctly without local storage
-    gem_limit = 2
+    gem_limit = 1
     coal_limit = 5
     pin_react_limit = 5
     excluded_channels = []
@@ -164,13 +164,14 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
         ]
 
         is_gif = False
+        is_image = fetch_check(msg.content)
 
         for pattern in gif_patterns:
             if re.search(pattern, msg.content):
                 is_gif = True
                 break
 
-        if len(msg.content) > 0 and not is_gif: # message text
+        if len(msg.content) > 0 and not is_gif and not is_image: # message text
             embed.add_field(name="", value=msg.content)
 
         if len(msg.attachments) > 0:
@@ -212,8 +213,10 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
             embed.add_field(name="", value=f"-# [jump to message]({msg.jump_url})", inline=False)
             await gem_channel.send(embed=embed)
             await gem_channel.send(content=msg.content)
-        elif fetch_check(msg.content):
-            embed.set_image(msg.content)
+        elif is_image:
+            embed.set_image(url=msg.content)
+            
+            embed.add_field(name="", value=f"-# [jump to message]({msg.jump_url})", inline=False)
 
             await gem_channel.send(embed=embed)    
         else:
