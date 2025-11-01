@@ -2,6 +2,7 @@ import ast
 import os
 import re
 import signal
+import requests
 
 import discord
 from dotenv import load_dotenv
@@ -48,6 +49,18 @@ def deserialize_pinned_list(server_id):
             return [int(line.strip()) for line in f.readlines()]
     except FileNotFoundError:
         return []
+
+
+def fetch_check(url: str) -> bool:
+    try:
+        response = requests.get(url, stream=True, timeout=10)
+        response.raise_for_status()
+
+        content_type = response.headers.get("Content-Type", "")
+        return content_type.startswith("image/")
+    except requests.RequestException:
+        return False
+
 
 @bot.command()
 async def gemskill(ctx: discord.ext.commands.Context):
@@ -199,6 +212,10 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
             embed.add_field(name="", value=f"-# [jump to message]({msg.jump_url})", inline=False)
             await gem_channel.send(embed=embed)
             await gem_channel.send(content=msg.content)
+        elif fetch_check(msg.content):
+            embed.set_image(msg.content)
+
+            await gem_channel.send(embed=embed)    
         else:
             # await current_channel.send(embed=embed, reference=msg)
             embed.add_field(name="", value=f"-# [jump to message]({msg.jump_url})", inline=False)
