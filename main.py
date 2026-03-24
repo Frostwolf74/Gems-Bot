@@ -134,10 +134,18 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
     for reaction in msg.reactions:
         if reaction.emoji == "💎":
             gem_react_count = reaction.count
+
+            # users cannot count their own reaction
+            if msg.author == event.member:
+                gem_react_count -= 1
             break
 
         if coal_emoji_id is not None and coal_emoji_id in str(reaction.emoji):
             react_count = reaction.count
+
+            # users cannot count their own reaction
+            if msg.author == event.member:
+                react_count -= 1
             break
 
     # prevent it from deleting from important channels
