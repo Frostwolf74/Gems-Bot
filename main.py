@@ -129,7 +129,7 @@ async def set_excluded_channels(interaction: discord.Interaction, channel: disco
         if read != "":
             excluded_channels_from_file: dict[int, list[int]] = ast.literal_eval(read)
 
-    excluded_channels_from_file[interaction.guild.id].append(channel.id)
+    excluded_channels_from_file[list(excluded_channels_from_file).index(interaction.guild.id)].append(channel.id)
 
     global excluded_channels_global
     excluded_channels_global = excluded_channels_from_file
