@@ -21,6 +21,7 @@ bot = commands.Bot(command_prefix='​', intents=intents)
 # server.id: gem_channel
 servers = {}
 servers_coal = {}
+excluded_channels = {}
 
 gem_board_lock = asyncio.Lock()
 
@@ -122,6 +123,13 @@ async def set_excluded_channels(interaction: discord.Interaction, channel: disco
         await interaction.response.send_message("You dont have permission to use this command.")
         return
 
+    global excluded_channels
+    excluded_channels.update({channel.id: channel.id})
+
+    with open("excluded_channels.txt", "w") as f:
+        f.write(str(excluded_channels))
+
+    await interaction.response.send_message("Channel added to excluded channels list.")
 
 
 @bot.event
@@ -264,6 +272,7 @@ async def on_ready():
     print("Syncing servers")
     global servers
     global servers_coal
+    global excluded_channels
 
     if "servers.txt" not in os.listdir(os.getcwd()):
         open("servers.txt", "w").close()
@@ -284,6 +293,11 @@ async def on_ready():
         read = coals_file.read()
         if read != "":
             servers_coal = ast.literal_eval(read)
+
+    with open("excluded_channels.txt", "r+") as excluded_channels_file:
+        read = excluded_channels_file.read()
+        if read != "":
+            excluded_channels = ast.literal_eval(read)
 
     print("Ready")
 
