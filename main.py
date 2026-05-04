@@ -21,7 +21,7 @@ bot = commands.Bot(command_prefix='​', intents=intents)
 # server.id: gem_channel
 servers = {}
 servers_coal = {}
-excluded_channels = {}
+excluded_channels_global = {}
 
 gem_board_lock = asyncio.Lock()
 
@@ -123,13 +123,20 @@ async def set_excluded_channels(interaction: discord.Interaction, channel: disco
         await interaction.response.send_message("You dont have permission to use this command.")
         return
 
-    global excluded_channels
-    excluded_channels.update({channel.id: channel.id})
+    with open("excluded_channels.txt", "r+") as f:
+        read = f.read()
+        if read != "":
+            excluded_channels_from_file: dict[int, list[int]] = ast.literal_eval(read)
+
+    excluded_channels_from_file[interaction.guild.id].append(channel.id)
+
+    global excluded_channels_global
+    excluded_channels_global = excluded_channels_from_file
 
     with open("excluded_channels.txt", "w") as f:
-        f.write(str(excluded_channels))
+        f.write(str(excluded_channels_global))
 
-    await interaction.response.send_message("Channel added to excluded channels list.")
+    await interaction.response.send_message("Channel added to excluded channels list.", ephemeral=True)
 
 
 @bot.event
@@ -141,7 +148,7 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
     gem_limit = 2
     coal_limit = 5
     pin_react_limit = 5
-    excluded_channels = []
+    excluded_channels = excluded_channels_global.get(event.guild_id)
     global servers_coal
     coal_emoji_id = servers_coal.get(event.guild_id)
 
@@ -272,7 +279,7 @@ async def on_ready():
     print("Syncing servers")
     global servers
     global servers_coal
-    global excluded_channels
+    global excluded_channels_global
 
     if "servers.txt" not in os.listdir(os.getcwd()):
         open("servers.txt", "w").close()
@@ -300,7 +307,7 @@ async def on_ready():
     with open("excluded_channels.txt", "r+") as excluded_channels_file:
         read = excluded_channels_file.read()
         if read != "":
-            excluded_channels = ast.literal_eval(read)
+            excluded_channels_global = ast.literal_eval(read)
 
     print("Ready")
 
