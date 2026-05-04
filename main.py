@@ -124,12 +124,16 @@ async def set_excluded_channels(interaction: discord.Interaction, channel: disco
         return
 
     excluded_channels_from_file: dict[int, list[int]] = {}
-    with open("excluded_channels.txt", "r+") as f:
-        read = f.read()
-        if read != "":
-            excluded_channels_from_file: dict[int, list[int]] = ast.literal_eval(read)
+    if "excluded_channels.txt" in os.listdir(os.getcwd()): # append if it exists
+        with open("excluded_channels.txt", "r+") as f:
+            read = f.read()
+            if read != "":
+                excluded_channels_from_file: dict[int, list[int]] = ast.literal_eval(read)
 
-    excluded_channels_from_file[list(excluded_channels_from_file).index(interaction.guild.id)].append(channel.id)
+        try:
+            excluded_channels_from_file[list(excluded_channels_from_file).index(interaction.guild.id)].append(channel.id)
+        except ValueError: # if the file exists but the guild id is not in it
+            excluded_channels_from_file.update({interaction.guild.id: [channel.id]})
 
     global excluded_channels_global
     excluded_channels_global = excluded_channels_from_file
@@ -289,9 +293,6 @@ async def on_ready():
     if "coals.txt" not in os.listdir(os.getcwd()):
         open("coals.txt", "w").close()
 
-    if "excluded_channels.txt" not in os.listdir(os.getcwd()):
-        open("excluded_channels.txt", "w").close()
-
     # read existing server configuration into servers dictionary
     # server.id: gem_channel <- servers.txt
     with open("servers.txt", "r+") as servers_file:
@@ -306,10 +307,11 @@ async def on_ready():
         if read != "":
             servers_coal = ast.literal_eval(read)
 
-    with open("excluded_channels.txt", "r+") as excluded_channels_file:
-        read = excluded_channels_file.read()
-        if read != "":
-            excluded_channels_global = ast.literal_eval(read)
+    if "excluded_channels.txt" in os.listdir(os.getcwd()):
+        with open("excluded_channels.txt", "r+") as excluded_channels_file:
+            read = excluded_channels_file.read()
+            if read != "":
+                excluded_channels_global = ast.literal_eval(read)
 
     print("Ready")
 
