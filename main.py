@@ -280,6 +280,9 @@ async def on_ready():
     if "coals.txt" not in os.listdir(os.getcwd()):
         open("coals.txt", "w").close()
 
+    if "excluded_channels.txt" not in os.listdir(os.getcwd()):
+        open("excluded_channels.txt", "w").close()
+
     # read existing server configuration into servers dictionary
     # server.id: gem_channel <- servers.txt
     with open("servers.txt", "r+") as servers_file:
