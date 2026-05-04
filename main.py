@@ -123,6 +123,7 @@ async def set_excluded_channels(interaction: discord.Interaction, channel: disco
         await interaction.response.send_message("You dont have permission to use this command.")
         return
 
+    excluded_channels_from_file: dict[int, list[int]] = {}
     with open("excluded_channels.txt", "r+") as f:
         read = f.read()
         if read != "":
@@ -148,6 +149,7 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
     gem_limit = 2
     coal_limit = 5
     pin_react_limit = 5
+    global excluded_channels_global
     excluded_channels = excluded_channels_global.get(event.guild_id)
     global servers_coal
     coal_emoji_id = servers_coal.get(event.guild_id)
