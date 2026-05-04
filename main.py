@@ -320,14 +320,18 @@ async def on_command_error(ctx, error): # FOR CTX
         await ctx.send(error)
 
 
-@bot.tree.error # FOR DISCORD.INTERACTION
+@bot.tree.error
 async def throw_error(interaction: discord.Interaction, error):
+    embed = discord.Embed(
+        title="Error", description=f"{bot.user.name} ran into a problem and could not process your request.", color=discord.Color.red()
+    )
+    embed.add_field(name="", value=str(error.__cause__), inline=False)
+
     try:
-        await interaction.followup.send(str(error)) # use preexisting webhook
+        await interaction.followup.send(embed=embed) # use preexisting webhook
     except:
-        await interaction.channel.send(str(error)) # if webhook isnt reachable
+        await interaction.response.send_message(embed=embed) # if the webhook is not found, send a new message
 
     raise error
-
 
 bot.run(token)
