@@ -80,8 +80,8 @@ async def gemskill(ctx: discord.ext.commands.Context):
     description="set the channel gem reacted posts will be posted in"
 )
 async def set_channel(interaction: discord.Interaction, channel: discord.TextChannel):
-    if interaction.user.id != 670821194550870016:
-        await interaction.response.send_message("Youre not Frostwolf74, you cannot use this command.")
+    if not (await interaction.guild.fetch_member(interaction.user.id)).guild_permissions.administrator:
+        await interaction.response.send_message("You dont have permission to use this command.")
         return
 
     global servers
@@ -99,8 +99,8 @@ async def set_channel(interaction: discord.Interaction, channel: discord.TextCha
     description="set the coal emoji id"
 )
 async def set_coal(interaction: discord.Interaction, emoji_id: str):
-    if interaction.user.id != 670821194550870016:
-        await interaction.response.send_message("Youre not Frostwolf74, you cannot use this command.")
+    if not (await interaction.guild.fetch_member(interaction.user.id)).guild_permissions.administrator:
+        await interaction.response.send_message("You dont have permission to use this command.")
         return
 
     global servers_coal
@@ -113,11 +113,22 @@ async def set_coal(interaction: discord.Interaction, emoji_id: str):
     await interaction.response.send_message("Coal emoji set")
 
 
+@bot.tree.command(
+    name="set-excluded-channels",
+    description="Set channels for the bot to ignore"
+)
+async def set_excluded_channels(interaction: discord.Interaction, channel: discord.TextChannel):
+    if not (await interaction.guild.fetch_member(interaction.user.id)).guild_permissions.administrator:
+        await interaction.response.send_message("You dont have permission to use this command.")
+        return
+
+
+
 @bot.event
 async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
     msg = await (await bot.fetch_channel(event.channel_id)).fetch_message(event.message_id)
     global servers
-    gem_channel_id = servers.get(msg.guild.id)
+    gem_channel_id = servers.get(msg.guild.id) # fetch the channel value int from the associated server key int
     attachment_cloud_id = 1429688927601823804 # for ensuring images are saved correctly without local storage
     gem_limit = 2
     coal_limit = 5
@@ -156,13 +167,13 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
         await msg.delete()
 
     if gem_react_count >= gem_limit and msg.channel.id not in excluded_channels and msg.id and msg.author.id != bot.user.id:
-        global gem_board_lock
+        global gem_board_lock # prevents parallel instances in the event that a post is reacted to by two different users at the same time
         async with gem_board_lock:
             gem_list = deserialize_gem_list(event.guild_id)
             if msg.id not in gem_list:
                 print(str(msg.id) + " added to gem board | gems: " + str(gem_react_count) + " | short id: " + str(msg.id)[0] + str(msg.id)[1] + str(msg.id)[len(str(msg.id)) - 2] + str(msg.id)[len(str(msg.id)) - 1])
 
-                gem_channel = bot.get_channel(gem_channel_id)
+                gem_channel = await bot.fetch_channel(gem_channel_id) # will never not be an int
                 current_channel = bot.get_channel(event.channel_id)
                 attachment_cloud = bot.get_channel(attachment_cloud_id)
                 embed = discord.Embed(colour=msg.author.color, timestamp=msg.created_at)
@@ -184,11 +195,13 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
                         is_gif = True
                         break
 
-                if len(msg.content) > 0 and not is_gif and not is_image: # message text
+                # check if there is text
+                if len(msg.content) > 0 and not is_gif and not is_image:
                     embed.add_field(name="", value=msg.content)
 
+                # check if there are attachments
                 if len(msg.attachments) > 0:
-                    if msg.attachments[0].content_type == "video/mp4" or msg.attachments[0].content_type == "video/quicktime": # webm
+                    if msg.attachments[0].content_type == "video/mp4" or msg.attachments[0].content_type == "video/quicktime" or msg.attachments[0].content_type == "video/webm": # quicktime = mov
                         files = []
                         for attachment in msg.attachments:
                             file = await attachment.to_file()
@@ -202,41 +215,28 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
                             files1.append(file)
 
                         try:
-                            # await current_channel.send(files=files, embed=embed, reference=msg)
-                            embed.add_field(name="", value=f"-# [jump to message]({msg.jump_url})", inline=False)
                             await gem_channel.send(files=files1, embed=embed)
-                        except discord.errors.HTTPException: # file too big
+                        except discord.errors.HTTPException: # file too big, send attachment link instead
                             attachments = ""
                             for attachment in msg.attachments:
                                 attachments += attachment.url + "\n"
 
-                            # await current_channel.send(embed=embed, reference=msg)
-                            # await current_channel.send(attachments)
-                            embed.add_field(name="", value=f"-# [jump to message]({msg.jump_url})", inline=False)
                             await gem_channel.send(embed=embed)
                             await gem_channel.send(attachments)
                     else:
-                        message = await attachment_cloud.send(file=await msg.attachments[0].to_file())
-                        embed.set_image(url=message.attachments[0].url)
-                        # await current_channel.send(embed=embed, reference=msg)
-                        embed.add_field(name="", value=f"-# [jump to message]({msg.jump_url})", inline=False)
+                        cloud_message = await attachment_cloud.send(file=await msg.attachments[0].to_file())
+                        embed.set_image(url=cloud_message.attachments[0].url)
                         await gem_channel.send(embed=embed)
-                elif is_gif:
-                    # await current_channel.send(content=msg.content, reference=msg)
-                    embed.add_field(name="", value=f"-# [jump to message]({msg.jump_url})", inline=False)
+                elif is_gif: # would be a link
                     await gem_channel.send(embed=embed)
                     await gem_channel.send(content=msg.content)
-                elif is_image:
+                elif is_image: # would also be a link
                     embed.set_image(url=msg.content)
-
-                    embed.add_field(name="", value=f"-# [jump to message]({msg.jump_url})", inline=False)
-
                     await gem_channel.send(embed=embed)
-                else:
-                    # await current_channel.send(embed=embed, reference=msg)
-                    embed.add_field(name="", value=f"-# [jump to message]({msg.jump_url})", inline=False)
+                else: # anything else
                     await gem_channel.send(embed=embed)
 
+                embed.add_field(name="", value=f"-# [jump to message]({msg.jump_url})", inline=False)
                 gem_list.append(msg.id)
                 serialize_gem_list(gem_list, event.guild_id)
 
