@@ -130,6 +130,7 @@ async def set_excluded_channels(interaction: discord.Interaction, channel: disco
             if read != "":
                 excluded_channels_from_file: dict[int, list[int]] = ast.literal_eval(read)
 
+        print(excluded_channels_from_file)
         try:
             excluded_channels_from_file[list(excluded_channels_from_file).index(interaction.guild.id)].append(channel.id)
         except ValueError: # if the file exists but the guild id is not in it
