@@ -243,22 +243,20 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
                             for attachment in msg.attachments:
                                 attachments += attachment.url + "\n"
 
-                            await gem_channel.send(embed=embed)
                             await gem_channel.send(attachments)
+                        return # avoid sending embed again
                     else:
                         cloud_message = await attachment_cloud.send(file=await msg.attachments[0].to_file())
                         embed.set_image(url=cloud_message.attachments[0].url)
-                        await gem_channel.send(embed=embed)
                 elif is_gif: # would be a link
-                    await gem_channel.send(embed=embed)
                     await gem_channel.send(content=msg.content)
+                    return
                 elif is_image: # would also be a link
                     embed.set_image(url=msg.content)
-                    await gem_channel.send(embed=embed)
-                else: # anything else
-                    await gem_channel.send(embed=embed)
+                    
 
                 embed.add_field(name="", value=f"-# [jump to message]({msg.jump_url})", inline=False)
+                await gem_channel.send(embed=embed)
                 gem_list.append(msg.id)
                 serialize_gem_list(gem_list, event.guild_id)
 
