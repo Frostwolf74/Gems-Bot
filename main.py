@@ -154,6 +154,7 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
     gem_limit = 3
     coal_limit = 5
     pin_react_limit = 5
+    misc_react_limit = 3
     global excluded_channels_global
     excluded_channels = excluded_channels_global.get(event.guild_id)
     global servers_coal
@@ -163,6 +164,9 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
     react_count = 0
     # count gem reacts
     gem_react_count = 0
+    # count misc reacts
+    misc_react_count = 0
+
     files = []
     pinned_list = deserialize_pinned_list(event.guild_id)
     for reaction in msg.reactions:
@@ -181,6 +185,14 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
             if msg.author == event.member:
                 react_count -= 1
             break
+
+        # any other reaction, get the highest number
+        if reaction.count > misc_react_count:
+            misc_react_count = reaction.count
+
+            # users cannot count their own reaction
+            if msg.author == event.member:
+                misc_react_count -= 1
 
     # prevent it from deleting from important channels
     if react_count >= coal_limit and msg.channel.id not in excluded_channels:
@@ -260,6 +272,12 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
                 gem_list.append(msg.id)
                 serialize_gem_list(gem_list, event.guild_id)
 
+    if misc_react_count >= misc_react_limit:
+        await (await bot.fetch_channel(event.channel_id)).create_thread(
+            name=msg.author.display_name,
+            message=msg
+        )
+
     if gem_react_count >= pin_react_limit and msg.channel.id not in excluded_channels and msg.id not in pinned_list and msg.author.id != bot.user.id:
         pinned_list.append(msg.id)
         serialize_pinned_list(pinned_list, event.guild_id)
@@ -281,7 +299,7 @@ async def on_ready():
     for command in bot.tree.get_commands():
         print(command.name)
 
-    print("Syncing servers")
+    print("\nSyncing servers")
     global servers
     global servers_coal
     global excluded_channels_global
@@ -312,7 +330,9 @@ async def on_ready():
             if read != "":
                 excluded_channels_global = ast.literal_eval(read)
 
-    print("Ready")
+    print("\nReady in:")
+    for guild in bot.guilds:
+        print(guild)
 
 
 @bot.event
