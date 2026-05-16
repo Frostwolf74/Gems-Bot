@@ -325,16 +325,6 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
                 gem_list.append(msg.id)
                 serialize_gem_list(gem_list, event.guild_id)
 
-    ### new feature:
-    # create a thread in the gem channel for misc reactions, when a message in any channel reaches a reaction count of
-    # a unique emoji greater than 3, a message will be created in the gem channel of the emoji using :emoji_name:.
-    # A thread will then be attached to the message where the user message in the other channel that has the actual
-    # reactions on it will be posted in the channel like any other post in the gem channel. Then any subsequent messages
-    # reacted to in the same fashion will be posted to this thread after the message in question reaches the required
-    # threshold of reactions.
-    ## flow: 3 unique users excluding the author react to a message with :rofl:, :rofl: is posted in the gem channel and
-    # a thread is made off of this message and the original message with the 3 reactions gets posted here.
-    # if this exact process repeats on any other message, it will be appended to this thread.
     if misc_react_count >= misc_react_limit:
         thread_list = deserialize_thread_list(event.guild_id)
 
