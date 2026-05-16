@@ -2,6 +2,9 @@ import ast
 import os
 import re
 import signal
+from email.header import UTF8
+from idlelib.debugobj_r import remote_object_tree_item
+
 import requests
 import discord
 import asyncio
@@ -54,6 +57,34 @@ def deserialize_pinned_list(server_id):
         return []
 
 
+def serialize_misc_dict(misc_list, server_id):
+    with open("misc_list-" + str(server_id) + ".txt", "w", encoding="utf-8") as f:
+        f.write(str(misc_list))
+
+
+def deserialize_misc_dict(server_id):
+    try:
+        with open("misc_list-" + str(server_id) + ".txt", "r", encoding="utf-8") as f:
+            read = f.read()
+            return ast.literal_eval(read) if read else {} # force to dictionary
+    except FileNotFoundError:
+        return {}
+
+
+def serialize_thread_list(thread_list, server_id):
+    with open("thread_list-" + str(server_id) + ".txt", "w") as f:
+        for thread in thread_list:
+            f.write(str(thread) + "\n")
+
+
+def deserialize_thread_list(server_id):
+    try:
+        with open("thread_list-" + str(server_id) + ".txt", "r") as f:
+            return [int(line.strip()) for line in f.readlines()]
+    except FileNotFoundError:
+        return []
+
+
 def fetch_check(url: str) -> bool:
     try:
         response = requests.get(url, stream=True, timeout=10)
@@ -63,6 +94,81 @@ def fetch_check(url: str) -> bool:
         return content_type.startswith("image/")
     except requests.RequestException:
         return False
+
+
+def emoji_key(emoji) -> str:
+    if isinstance(emoji, str):
+        return f"unicode:{emoji}"
+
+    return f"custom:{emoji.id}"
+
+
+def emoji_display_name(emoji) -> str:
+    if isinstance(emoji, str):
+        return emoji
+
+    return emoji.name
+
+
+async def send_embed(msg: discord.Message, attachment_cloud: discord.TextChannel, target_channel: discord.TextChannel):
+    embed = discord.Embed(colour=msg.author.color, timestamp=msg.created_at)
+
+    embed.set_author(name=msg.author.display_name, icon_url=msg.author.avatar)
+
+    gif_patterns = [
+        r'https?://(?:www\.)?tenor\.com/view/[\w-]+',
+        r'https?://(?:www\.)?gfycat\.com/[\w-]+',
+        r'https?://media\d?\.giphy\.com/media/[\w-]+/giphy\.gif',
+        r'.*\.gif(?:$|\?.*)'
+    ]
+
+    is_gif = False
+    is_image = fetch_check(msg.content)
+
+    for pattern in gif_patterns:
+        if re.search(pattern, msg.content):
+            is_gif = True
+            break
+
+    # check if there is text
+    if len(msg.content) > 0 and not is_gif and not is_image:
+        embed.add_field(name="", value=msg.content)
+
+    # check if there are attachments
+    if len(msg.attachments) > 0:
+        if msg.attachments[0].content_type == "video/mp4" or msg.attachments[0].content_type == "video/quicktime" or msg.attachments[0].content_type == "video/webm":  # quicktime = mov
+            files = []
+            for attachment in msg.attachments:
+                file = await attachment.to_file()
+                file.spoiler = attachment.is_spoiler()
+                files.append(file)
+
+            files1 = []
+            for attachment in msg.attachments:
+                file = await attachment.to_file()
+                file.spoiler = attachment.is_spoiler()
+                files1.append(file)
+
+            try:
+                await target_channel.send(files=files1, embed=embed)
+            except discord.errors.HTTPException:  # file too big, send attachment link instead
+                attachments = ""
+                for attachment in msg.attachments:
+                    attachments += attachment.url + "\n"
+
+                await target_channel.send(attachments)
+            return  # avoid sending embed again
+        else:
+            cloud_message = await attachment_cloud.send(file=await msg.attachments[0].to_file())
+            embed.set_image(url=cloud_message.attachments[0].url)
+    elif is_gif:  # would be a link
+        await target_channel.send(content=msg.content)
+        return
+    elif is_image:  # would also be a link
+        embed.set_image(url=msg.content)
+
+    embed.add_field(name="", value=f"-# [jump to message]({msg.jump_url})", inline=False)
+    await target_channel.send(embed=embed)
 
 
 @bot.command()
@@ -150,11 +256,13 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
     msg = await (await bot.fetch_channel(event.channel_id)).fetch_message(event.message_id)
     global servers
     gem_channel_id = servers.get(msg.guild.id) # fetch the channel value int from the associated server key int
+    gem_channel = await bot.fetch_channel(gem_channel_id)  # will never not be an int
     attachment_cloud_id = 1429688927601823804 # for ensuring images are saved correctly without local storage
+    attachment_cloud = bot.get_channel(attachment_cloud_id)
     gem_limit = 3
     coal_limit = 5
     pin_react_limit = 5
-    misc_react_limit = 3
+    misc_react_limit = 1
     global excluded_channels_global
     excluded_channels = excluded_channels_global.get(event.guild_id)
     global servers_coal
@@ -166,7 +274,10 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
     gem_react_count = 0
     # count misc reacts
     misc_react_count = 0
+    # the emoji itself
+    top_misc_react = ""
 
+    misc_dict = deserialize_misc_dict(event.guild_id)
     files = []
     pinned_list = deserialize_pinned_list(event.guild_id)
     for reaction in msg.reactions:
@@ -189,6 +300,7 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
         # any other reaction, get the highest number
         if reaction.count > misc_react_count:
             misc_react_count = reaction.count
+            top_misc_react = reaction.emoji
 
             # users cannot count their own reaction
             if msg.author == event.member:
@@ -207,76 +319,46 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
             if msg.id not in gem_list:
                 print(str(msg.id) + " added to gem board | gems: " + str(gem_react_count) + " | short id: " + str(msg.id)[0] + str(msg.id)[1] + str(msg.id)[len(str(msg.id)) - 2] + str(msg.id)[len(str(msg.id)) - 1])
 
-                gem_channel = await bot.fetch_channel(gem_channel_id) # will never not be an int
                 current_channel = bot.get_channel(event.channel_id)
-                attachment_cloud = bot.get_channel(attachment_cloud_id)
-                embed = discord.Embed(colour=msg.author.color, timestamp=msg.created_at)
 
-                embed.set_author(name=msg.author.display_name, icon_url=msg.author.avatar)
-
-                gif_patterns = [
-                    r'https?://(?:www\.)?tenor\.com/view/[\w-]+',
-                    r'https?://(?:www\.)?gfycat\.com/[\w-]+',
-                    r'https?://media\d?\.giphy\.com/media/[\w-]+/giphy\.gif',
-                    r'.*\.gif(?:$|\?.*)'
-                ]
-
-                is_gif = False
-                is_image = fetch_check(msg.content)
-
-                for pattern in gif_patterns:
-                    if re.search(pattern, msg.content):
-                        is_gif = True
-                        break
-
-                # check if there is text
-                if len(msg.content) > 0 and not is_gif and not is_image:
-                    embed.add_field(name="", value=msg.content)
-
-                # check if there are attachments
-                if len(msg.attachments) > 0:
-                    if msg.attachments[0].content_type == "video/mp4" or msg.attachments[0].content_type == "video/quicktime" or msg.attachments[0].content_type == "video/webm": # quicktime = mov
-                        files = []
-                        for attachment in msg.attachments:
-                            file = await attachment.to_file()
-                            file.spoiler = attachment.is_spoiler()
-                            files.append(file)
-
-                        files1 = []
-                        for attachment in msg.attachments:
-                            file = await attachment.to_file()
-                            file.spoiler = attachment.is_spoiler()
-                            files1.append(file)
-
-                        try:
-                            await gem_channel.send(files=files1, embed=embed)
-                        except discord.errors.HTTPException: # file too big, send attachment link instead
-                            attachments = ""
-                            for attachment in msg.attachments:
-                                attachments += attachment.url + "\n"
-
-                            await gem_channel.send(attachments)
-                        return # avoid sending embed again
-                    else:
-                        cloud_message = await attachment_cloud.send(file=await msg.attachments[0].to_file())
-                        embed.set_image(url=cloud_message.attachments[0].url)
-                elif is_gif: # would be a link
-                    await gem_channel.send(content=msg.content)
-                    return
-                elif is_image: # would also be a link
-                    embed.set_image(url=msg.content)
-                    
-
-                embed.add_field(name="", value=f"-# [jump to message]({msg.jump_url})", inline=False)
-                await gem_channel.send(embed=embed)
+                await send_embed(msg, attachment_cloud, gem_channel)
                 gem_list.append(msg.id)
                 serialize_gem_list(gem_list, event.guild_id)
 
+    ### new feature:
+    # create a thread in the gem channel for misc reactions, when a message in any channel reaches a reaction count of
+    # a unique emoji greater than 3, a message will be created in the gem channel of the emoji using :emoji_name:.
+    # A thread will then be attached to the message where the user message in the other channel that has the actual
+    # reactions on it will be posted in the channel like any other post in the gem channel. Then any subsequent messages
+    # reacted to in the same fashion will be posted to this thread after the message in question reaches the required
+    # threshold of reactions.
+    ## flow: 3 unique users excluding the author react to a message with :rofl:, :rofl: is posted in the gem channel and
+    # a thread is made off of this message and the original message with the 3 reactions gets posted here.
+    # if this exact process repeats on any other message, it will be appended to this thread.
     if misc_react_count >= misc_react_limit:
-        await (await bot.fetch_channel(event.channel_id)).create_thread(
-            name=msg.author.display_name,
-            message=msg
-        )
+        thread_list = deserialize_thread_list(event.guild_id)
+
+        if misc_react_count >= misc_react_limit:
+            thread_list = deserialize_thread_list(event.guild_id)
+
+            misc_key = emoji_key(top_misc_react)
+            misc_name = emoji_display_name(top_misc_react)
+
+            if misc_key not in misc_dict.keys():
+                message = await gem_channel.send(content=misc_name)
+                thread = await message.create_thread(
+                    name=misc_name
+                )
+                misc_dict.update({misc_key: thread.id})
+                serialize_misc_dict(misc_dict, event.guild_id)
+            else:
+                thread = await bot.fetch_channel(int(misc_dict.get(misc_key)))
+                msg = await (await bot.fetch_channel(event.channel_id)).fetch_message(event.message_id)
+                await send_embed(msg, attachment_cloud, thread)
+
+            thread_list.append(thread.id)
+            serialize_thread_list(thread_list, event.guild_id)
+
 
     if gem_react_count >= pin_react_limit and msg.channel.id not in excluded_channels and msg.id not in pinned_list and msg.author.id != bot.user.id:
         pinned_list.append(msg.id)
