@@ -262,7 +262,7 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
     gem_limit = 3
     coal_limit = 5
     pin_react_limit = 5
-    misc_react_limit = 1
+    misc_react_limit = 3
     global excluded_channels_global
     excluded_channels = excluded_channels_global.get(event.guild_id)
     global servers_coal
