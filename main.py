@@ -2,8 +2,6 @@ import ast
 import os
 import re
 import signal
-from email.header import UTF8
-from idlelib.debugobj_r import remote_object_tree_item
 
 import requests
 import discord
