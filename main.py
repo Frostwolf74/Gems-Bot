@@ -328,26 +328,27 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
     if misc_react_count >= misc_react_limit:
         thread_list = deserialize_thread_list(event.guild_id)
 
-        if misc_react_count >= misc_react_limit:
-            thread_list = deserialize_thread_list(event.guild_id)
+        misc_key = emoji_key(top_misc_react)
+        misc_name = emoji_display_name(top_misc_react)
 
-            misc_key = emoji_key(top_misc_react)
-            misc_name = emoji_display_name(top_misc_react)
+        if misc_key not in misc_dict.keys():
+            message = await gem_channel.send(content=misc_name)
+            thread = await message.create_thread(
+                name=misc_name
+            )
+            misc_dict.update({misc_key: thread.id})
+            serialize_misc_dict(misc_dict, event.guild_id)
+        else:
+            thread = await bot.fetch_channel(int(misc_dict.get(misc_key)))
+            msg = await (await bot.fetch_channel(event.channel_id)).fetch_message(event.message_id)
 
-            if misc_key not in misc_dict.keys():
-                message = await gem_channel.send(content=misc_name)
-                thread = await message.create_thread(
-                    name=misc_name
-                )
-                misc_dict.update({misc_key: thread.id})
-                serialize_misc_dict(misc_dict, event.guild_id)
-            else:
-                thread = await bot.fetch_channel(int(misc_dict.get(misc_key)))
-                msg = await (await bot.fetch_channel(event.channel_id)).fetch_message(event.message_id)
-                await send_embed(msg, attachment_cloud, thread)
+            async for message in thread.history(limit=None):
+                if message.id == msg.id:
+                    return
+            await send_embed(msg, attachment_cloud, thread)
 
-            thread_list.append(thread.id)
-            serialize_thread_list(thread_list, event.guild_id)
+        thread_list.append(thread.id)
+        serialize_thread_list(thread_list, event.guild_id)
 
 
     if gem_react_count >= pin_react_limit and msg.channel.id not in excluded_channels and msg.id not in pinned_list and msg.author.id != bot.user.id:
