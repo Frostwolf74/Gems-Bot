@@ -36,14 +36,9 @@ abetir
 abhorrer
 abime
 abimer
-abject
-abjection
-abjurer
-ablation
 aboiement
 aboli
 abolir
-abolition
 abolitionnisme
 abolitionniste
 abominer
@@ -57,7 +52,6 @@ abonnement
 abonnements
 abonner
 abonnes
-abord
 abordable
 abordage
 aborde
@@ -76,7 +70,6 @@ aboutit
 aboyer
 abracadabrant
 abrasif
-abrasion
 abrege
 abregee
 abreger
@@ -105,7 +98,6 @@ abstention
 abstentions
 abstenu
 abstenus
-abstraction
 abstrait
 abstraite
 abstraitement
@@ -187,7 +179,6 @@ accordeoniste
 accorder
 accordes
 accordeur
-accords
 accore
 accoster
 accouchement
@@ -198,8 +189,6 @@ accrocher
 accroissement
 accroitre
 accru
-accrue
-accrues
 accrus
 accueil
 accueillant
@@ -217,14 +206,11 @@ accumuler
 accumules
 accus
 accusait
-accusant
 accusee
 accusent
 acerbe
 acere
 acerer
-acetone
-acetylene
 acetylenique
 acharne
 acharnee
@@ -257,7 +243,6 @@ acides
 acidite
 acidule
 acier
-acolyte
 acompte
 acoustique
 acquereur
@@ -307,8 +292,6 @@ acul
 adagio
 adamien
 adamite
-adaptation
-adaptations
 adapte
 adaptee
 adaptees
@@ -320,9 +303,7 @@ additionner
 adepte
 adeptes
 adequat
-adherent
 adherente
-adherents
 adherer
 adhesion
 adieu
@@ -330,9 +311,7 @@ adieux
 adipeux
 adjectif
 adjoindre
-adjoint
 adjointe
-adjoints
 adjonction
 admet
 admettent
@@ -342,7 +321,6 @@ administrateur
 administrateurs
 administratif
 administratifs
-administrations
 administratives
 administrer
 administres
@@ -358,8 +336,6 @@ adolescentes
 adonis
 adoptant
 adopte
-adoptee
-adoptees
 adoptent
 adopter
 adoptes
@@ -432,17 +408,11 @@ affinites
 affirmait
 affirmant
 affirmatif
-affirmation
-affirmations
 affirme
 affirmee
 affirment
-affirmer
-affliction
 afflige
 affliger
-affluence
-affluent
 affluer
 afflux
 affolement
@@ -523,7 +493,6 @@ agricole
 agricoles
 agriculteur
 agriculteurs
-agriculture
 agripper
 agroalimentaire
 agroalimentaires
@@ -554,8 +523,6 @@ aiguisage
 aiguise
 aiguiser
 aile
-aileron
-ailerons
 ailes
 ailette
 aille
@@ -599,7 +566,6 @@ ajuster
 alambique
 alarmant
 alarme
-alarmer
 albanais
 albanaise
 albatre
@@ -666,7 +632,6 @@ allegre
 allegrement
 allegresse
 allegretto
-allegro
 alleguer
 allemand
 allemande
@@ -676,7 +641,6 @@ aller
 alles
 allez
 alliage
-alliances
 allie
 alliee
 allier
@@ -694,9 +658,6 @@ alloues
 allume
 allumer
 allumettes
-allures
-allusion
-allusions
 alluvion
 alluvions
 almanach
@@ -725,7 +686,6 @@ alveole
 amabilite
 amadouer
 amaigrir
-amalgamation
 amalgame
 amalgamer
 amande
@@ -832,9 +792,6 @@ amphitryon
 amphore
 amplement
 ampleur
-amplification
-amplifier
-amplitude
 ampoule
 amputer
 amulette
@@ -878,7 +835,6 @@ anciennete
 anciens
 ancre
 andain
-andante
 andantino
 andelysienne
 andorran
@@ -926,7 +882,6 @@ animales
 animateur
 animateurs
 animaux
-anime
 animee
 animees
 animer
@@ -940,7 +895,6 @@ annee
 annees
 annexe
 annexer
-annexes
 annexion
 annihiler
 anniversaire
@@ -955,8 +909,6 @@ annonceur
 annonceurs
 annonciation
 annoneenne
-annotation
-annotations
 annuaire
 annuel
 annuelle
@@ -1084,9 +1036,6 @@ apparence
 apparences
 apparente
 appariteur
-appartement
-appartement
-appartements
 appartenaient
 appartenait
 appartenance
@@ -1124,7 +1073,6 @@ applaudi
 applaudir
 applaudissements
 applaudit
-applicable
 applicables
 appliquant
 applique
@@ -1199,7 +1147,6 @@ apres-midi
 aprete
 apte
 aptes
-aptitudes
 aquarelle
 aquarelliste
 aquatique
@@ -1224,7 +1171,6 @@ arbre de Noel
 arbres
 arbrisseau
 arbuste
-arcades
 arcane
 arceau
 archaique
@@ -1276,7 +1222,6 @@ aristocratique
 aristocratiquement
 aristocratisme
 arithmetique
-armada
 armateur
 armateurs
 armature
@@ -1337,27 +1282,22 @@ artere
 arteriosclerose
 artesien
 arthrite
-articulation
 articule
 articuler
-artifice
 artificiel
 artificielle
 artificiellement
 artificielles
 artillerie
 artilleur
-artisan
 artisanale
 artisanat
-artisans
 artistes
 artistique
 artistiquement
 artistiques
 arythmie
 asbeste
-ascendant
 ascenseur
 ascete
 ascetique
@@ -1366,21 +1306,16 @@ aseptique
 asiatique
 asiatiques
 asile
-asocial
 asperge
 asperger
 asperges
 asperite
 asphaltage
 asphalte
-asphalter
 asphyxie
 aspic
-aspirant
 aspirateur
-aspiration
 aspirent
-aspirer
 aspirine
 assaillants
 assaillir
@@ -1403,7 +1338,6 @@ assemblee
 assemblees
 assener
 assentiment
-assertion
 asservi
 asservir
 asseyez-vous
@@ -1512,7 +1446,6 @@ attachee
 attachees
 attachement
 attacher
-attaches
 attaque
 attaquer
 attaques
@@ -1546,16 +1479,12 @@ attentionne
 attentivement
 atterrer
 atterrir
-attestation
-attester
 attife
 attifer
 attique
 attirant
-attire
 attirent
 attirer
-attires
 attiser
 attractif
 attrait
@@ -1567,8 +1496,6 @@ attribuees
 attribuer
 attribues
 attribut
-attribution
-attributions
 attriste
 attrister
 attroupement
@@ -1623,7 +1550,6 @@ aurions
 aurons
 auront
 aurore
-auspices
 aussi
 aussitot
 austere
@@ -1656,9 +1582,6 @@ autodafe
 autodefense
 autodetermination
 autographe
-automate
-automates
-automation
 automatique
 automatiquement
 automatiques
@@ -1690,7 +1613,6 @@ autorite
 autorites
 autoroute
 autoroutes
-autos
 auto-stop
 autour
 autre
@@ -1725,7 +1647,6 @@ avant
 avantage
 avantages
 avantageux
-avant-garde
 avant-gardiste
 avant-hier
 avant-propos
@@ -1745,7 +1666,6 @@ aventures
 aventureux
 aventurier
 aventuriers
-avenues
 avere
 averti
 avertir
@@ -1769,9 +1689,6 @@ avides
 avidite
 aviez
 avilir
-avion
-avion
-avions
 aviron
 avis
 avise
@@ -1792,7 +1709,6 @@ avouent
 avouer
 avril
 axee
-axes
 axiome
 ayant
 azerbaidjanais
@@ -1878,7 +1794,6 @@ ballastages
 balle
 ballerine
 balles
-ballets
 ballons
 ballottage
 balneaire
@@ -1933,7 +1848,6 @@ baptise
 baptisee
 baptiser
 baptisme
-baptiste
 baragouin
 baraque
 baraquement
@@ -1956,9 +1870,7 @@ barometre
 barometrique
 baronnage
 baronnet
-barons
 barque
-barrages
 barre fixe
 barreau
 barreaux
@@ -1991,7 +1903,6 @@ bassin
 bassine
 bassiner
 bastaing
-bastion
 bastos
 bataille
 batailles
@@ -2007,7 +1918,6 @@ batir
 batisse
 batisseur
 batonnier
-batons
 battage
 battant
 battants
@@ -2168,7 +2078,6 @@ biologique
 biologiques
 biologistes
 biotechnologie
-biotechnologies
 bipede
 bique
 biquet
@@ -2195,7 +2104,6 @@ blaireau
 blamer
 blanc
 blanc de chaux
-blanche
 blanches
 blancheur
 blanchiment
@@ -2204,7 +2112,6 @@ blanchisserie
 blancs
 blase
 blason
-blasphemer
 blatte
 bleme
 blemir
@@ -2259,8 +2166,6 @@ bolivien
 bombance
 bombardement
 bombardements
-bombardier
-bombardiers
 bombe
 bombes
 bon coeur
@@ -2347,7 +2252,6 @@ bouleau
 boules
 boulet
 boulette
-boulevards
 bouleverse
 bouleversement
 bouleversements
@@ -2364,8 +2268,6 @@ bourbeux
 bourde
 bourg
 bourgade
-bourgeoise
-bourgeoisie
 bourgeon
 bourges
 bourgmestre
@@ -2407,7 +2309,6 @@ boycottage
 braguette
 brai
 brailler
-braise
 brame
 brancardier
 branche
@@ -2441,8 +2342,6 @@ brevets
 bricolage
 brider
 brievement
-brigades
-brigand
 brigue
 briguer
 brillamment
@@ -2496,7 +2395,6 @@ brunir
 brunissage
 brusque
 brusquement
-brut
 brutale
 brutalement
 brutalite
@@ -2568,13 +2466,9 @@ cadeau
 cadeaux
 cadence
 cadran
-cadre
-cadres
 caduc
 cafard
 cafardeux
-cafe restaurant
-cafes
 cafeter
 cafetiere
 cageot
@@ -2632,7 +2526,6 @@ calvados
 calvaire
 calvitie
 camarade
-camaraderie
 camarades
 cambodgien
 cambodgienne
@@ -2663,11 +2556,8 @@ canadiennes
 canadiens
 canaille
 canalisation
-canard
 canarder
-canards
 canaux
-cancan
 cancaner
 cancanier
 cancaniere
@@ -2686,7 +2576,6 @@ canne  peche
 cannele
 cannes
 cannibale
-canon
 canonique
 canons
 canot
@@ -2703,7 +2592,6 @@ capable de
 capables
 capacite
 capacites
-capes
 capitaine
 capitale
 capitales
@@ -2755,7 +2643,6 @@ caresse
 caresser
 caresses
 cargaison
-cargos
 caricature
 caricaturiste
 carillon
@@ -2764,7 +2651,6 @@ carma
 carmel
 carmelites
 carmin
-carnage
 carnassier
 carnaval
 carnavalesque
@@ -2785,10 +2671,8 @@ carres
 carriere
 carrieres
 carrosserie
-carte
 carte postale
 cartes
-cartier
 cartographie
 casemate
 caser
@@ -2807,7 +2691,6 @@ castel
 casus
 cataclysme
 catalan
-catalogues
 cataplasme
 cataracte
 catastrophes
@@ -2833,14 +2716,11 @@ cavale
 cavalerie
 cavaliere
 cavalieres
-cavaliers
 caverne
 caviarder
 cavite
 ceci
 cecite
-cedant
-cede
 ceder
 cedera
 cedex
@@ -2849,7 +2729,6 @@ ceindre
 ceinture
 ceinturon
 cela
-celebrations
 celebre
 celebree
 celebrer
@@ -2866,8 +2745,6 @@ celle-la
 celles
 cellier
 cellulaire
-cellule
-cellules
 celui
 celui-ci
 celui-la
@@ -2937,8 +2814,6 @@ cessent
 cesser
 cessez
 cessez-le-feu
-cession
-cessions
 cette
 ceux
 ceux-ci
@@ -3057,13 +2932,11 @@ chataignier
 chatain
 chateau fort
 chateaubriand
-chateaux
 chatelet
 chatier
 chatiment
 chatouiller
 chatoyer
-chats
 chaud
 chaude
 chaude journee
@@ -3075,8 +2948,6 @@ chauds
 chauffage
 chauffe
 chauffe-eau
-chauffer
-chauffeurs
 chauler
 chaume
 chaumiere
@@ -3233,7 +3104,6 @@ cible
 cibles
 cicatrice
 cicatriser
-cicerone
 ciel
 ciel de lit
 cierge
@@ -3248,7 +3118,6 @@ cimetieres
 cine
 cineaste
 cineastes
-cinemas
 cinematheque
 cinematographie
 cinematographique
@@ -3317,7 +3186,6 @@ claires
 clairon
 clairs
 clairseme
-clairvoyance
 clame
 clamer
 clandestin
@@ -3325,7 +3193,6 @@ clandestinement
 clandestines
 clandestinite
 clandestins
-clans
 clapoter
 claque
 claquer
@@ -3337,7 +3204,6 @@ classe
 classement
 classer
 classicisme
-classifications
 classique
 classiques
 claudicant
@@ -3347,7 +3213,6 @@ clavier
 claviers
 cle a molette
 cle anglaise
-clefs
 clemence
 clerc
 clerge
@@ -3390,8 +3255,6 @@ coefficient
 coequipier
 coercition
 coeur
-coexistence
-coexistent
 coffre
 coffret
 cogitation
@@ -3399,8 +3262,6 @@ cogiter
 cognee
 cogner
 cognitif
-cohabitation
-cohabiter
 coherence
 coherente
 cohue
@@ -3414,7 +3275,6 @@ colback
 colere
 colereux
 colerique
-colibri
 colimacon
 colis
 collaborateur
@@ -3488,18 +3348,14 @@ comique
 comiques
 comite
 comites
-commandants
 commande
 commandee
 commandement
 commandes
 commanditaire
 comme
-commemoration
 commencee
-commencement
 commencent
-commencer
 commencera
 commenceront
 commencons
@@ -3509,7 +3365,6 @@ commentait
 commentant
 commentateurs
 commente
-commenter
 commerage
 commerages
 commercant
@@ -3529,10 +3384,7 @@ commiseration
 commises
 commissaire
 commissaire-priseur
-commissaires
-commissariat
 commissionnaire
-commissions
 commissure
 commodite
 commodites
@@ -3541,7 +3393,6 @@ communautaire
 communautaires
 communaute
 communautes
-communes
 communicationnel
 communiquer
 communiques
@@ -3551,7 +3402,6 @@ communistes
 communs
 commutateur
 compacite
-compacts
 compagne
 compagnie
 compagnies
@@ -3623,14 +3473,10 @@ composant
 composante
 composantes
 composants
-compose
 composee
 composent
-composes
-composites
 compositeur
 compositeurs
-compositions
 compositrice
 comprenait
 comprenant
@@ -3643,7 +3489,6 @@ comprenne
 comprennent
 comprime
 compris
-comprises
 compromettre
 compromis
 comptabilite
@@ -3671,7 +3516,6 @@ concentree
 concentrer
 concepteur
 concepteurs
-conceptions
 concernait
 concernant
 concerne
@@ -3682,12 +3526,10 @@ concerner
 concernes
 concertation
 concertee
-concerto
 concevoir
 concile
 conciliant
 conciliateur
-conciliation
 concilier
 concis
 concitoyens
@@ -3702,7 +3544,6 @@ conclusif
 conclut
 concoit
 concombre
-concordance
 concordantes
 concorde
 concorder
@@ -3721,7 +3562,6 @@ concupiscence
 concupiscent
 concurrence
 concurrencer
-concurrent
 concurrente
 concurrentes
 concurrentiel
@@ -3735,7 +3575,6 @@ condamne
 condamnee
 condamner
 condamnes
-condense
 condescendance
 condescendant
 conditionnement
@@ -3747,14 +3586,11 @@ conduire
 conduisait
 conduisant
 conduisent
-conduit
 conduite
 conduites
-conduits
 confection
 confederal
 confederation helvetique
-confederations
 confedere
 confere
 conference de presse
@@ -3779,7 +3615,6 @@ confirme
 confirmee
 confirmees
 confirment
-confirmer
 confirmes
 confiscation
 confiserie
@@ -3791,10 +3626,8 @@ confond
 confondre
 confondues
 confondus
-conformation
 conforme
 conformement
-conformer
 conformes
 conformisme
 conformite
@@ -3824,7 +3657,6 @@ congressistes
 conifere
 coniferes
 conjecturer
-conjoint
 conjointe
 conjointement
 conjoints
@@ -3834,7 +3666,6 @@ conjoncture
 conjugaison
 conjuguer
 conjuration
-conjurer
 connais
 connaissaient
 connaissais
@@ -3854,7 +3685,6 @@ connasse
 conne
 connerie
 connivence
-connotation
 connu
 connue
 connues
@@ -3877,10 +3707,8 @@ consciencieux
 conscient
 consciente
 conscients
-consecration
 consecutif
 consecution
-consecutives
 conseil
 conseil des ministres
 conseille
@@ -3895,7 +3723,6 @@ consentement
 consenti
 consentir
 consentis
-consequent
 conservant
 conservateur
 conservateurs
@@ -3904,20 +3731,16 @@ conservatoire
 conservatrice
 conservee
 conservent
-conserver
 considerablement
 considerables
 considerait
 considerant
-considerations
 considere
 consideree
 considerees
 considerent
 considerer
 consideres
-consignations
-consigne
 consignes
 consistait
 consistance
@@ -3925,8 +3748,6 @@ consistant
 consiste
 consisterait
 consoeur
-consoler
-consolidation
 consolide
 consolider
 consommateur
@@ -3936,12 +3757,10 @@ consommatrice
 consomme
 consommer
 conspirateur
-conspiration
 constamment
 constance
 constante
 constantes
-constants
 constat
 constatait
 constatant
@@ -3974,7 +3793,6 @@ constitutionnelles
 constitutionnels
 constructeur
 constructeurs
-constructions
 construire
 construisent
 construit
@@ -3982,7 +3800,6 @@ construite
 construites
 construits
 consulat
-consultants
 consultatif
 consultative
 consulte
@@ -4029,8 +3846,6 @@ contexte
 contiennent
 contient
 continentale
-contingences
-contingent
 continu
 continuaient
 continuait
@@ -4045,7 +3860,6 @@ continuerait
 continueront
 continuite
 contorsion
-contour
 contourner
 contraceptif
 contractee
@@ -4099,7 +3913,6 @@ contribue
 contribuent
 contribuer
 contribuera
-contrition
 controle
 controlee
 controlees
@@ -4109,7 +3922,6 @@ controles
 controleur
 controleurs
 controuve
-controverse
 controversee
 controverser
 controverses
@@ -4120,8 +3932,6 @@ convaincre
 convaincu
 convaincue
 convaincus
-convalescence
-convenable
 convenablement
 convenait
 convenir
@@ -4130,11 +3940,8 @@ conventionnel
 conventionnelle
 conventionnelles
 conventionnels
-conventions
 convenu
 convenus
-convergence
-converser
 converti
 convertir
 convertis
@@ -4143,7 +3950,6 @@ conviendrait
 conviennent
 convient
 convier
-convocation
 convoi
 convois
 convoitise
@@ -4153,13 +3959,10 @@ convoquee
 convoquer
 convoques
 convulser
-convulsion
 cooperatif
 cooperations
-cooperatives
 cooperer
 coordinateur
-coordination
 coordonner
 copain
 copains
@@ -4181,7 +3984,6 @@ corde
 cordes
 cordialite
 cordier
-cordons
 coreen
 coreenne
 coreens
@@ -4197,7 +3999,6 @@ corollaire
 corporel
 corporellement
 corpulence
-corpulent
 corpus
 correctement
 correctionnel
@@ -4206,9 +4007,7 @@ correlatif
 correlationnel
 correle
 correspondait
-correspondance
 correspondances
-correspondant
 correspondante
 correspondants
 correspondre
@@ -4392,7 +4191,6 @@ crasse
 crasseux
 cravache
 cravate
-crayon
 crea
 creance
 creances
@@ -4419,7 +4217,6 @@ cremant
 creme glacee
 cremerie
 creneau
-creole
 crepi
 crepir
 crepiter
@@ -4463,10 +4260,8 @@ critique
 critiquee
 critiquent
 critiquer
-critiques
 croc-en-jambe
 croche-pied
-crochet
 crocheteur
 croient
 croirait
@@ -4487,7 +4282,6 @@ croit
 croitre
 croix
 croquer
-croquette
 croquis
 crotte
 crotter
@@ -4519,7 +4313,6 @@ cuiller
 cuillere
 cuilleree
 cuir
-cuirassiers
 cuire
 cuisiner
 cuisines
@@ -4586,7 +4379,6 @@ daller
 daltonisme
 damas
 dame de pique
-dames
 dangereuse
 dangereusement
 dangereuses
@@ -4665,14 +4457,12 @@ debutant
 debutants
 debute
 debuter
-debuts
 deca
 decachete
 decacheter
 decalage
 decamper
 decapiter
-decathlon
 decede
 deceder
 decelant
@@ -4717,15 +4507,11 @@ deciderent
 decideurs
 decimer
 decisif
-declamation
 declamer
 declarait
-declarant
-declarations
 declaree
 declarent
 declarer
-declares
 declenche
 declenchee
 declenchement
@@ -4742,8 +4528,6 @@ decolonisation
 decolore
 decolorer
 decombres
-decomposer
-decomposition
 deconcerte
 deconcerter
 deconner
@@ -4757,7 +4541,6 @@ decoratifs
 decore
 decorer
 decorne
-decors
 decortiquer
 decote
 decoule
@@ -4815,7 +4598,6 @@ defavorable
 defavorablement
 defavorisees
 defavorises
-defection
 defectueux
 defectuosite
 defendait
@@ -4825,18 +4607,14 @@ defendu
 defendue
 defenseur
 defenseurs
-deference
-deferent
 deferlement
 defi
 deficeler
 deficience
 deficitaire
 deficitaires
-deficits
 defier
 defigurer
-defile
 defilent
 defiler
 defiles
@@ -4883,7 +4661,6 @@ degoutant
 degoute par
 degouter
 degoutter
-degrader
 degre
 degres
 degringoler
@@ -4908,7 +4685,6 @@ delation
 delaye
 delectation
 delecter
-delegations
 delegue
 deleguee
 delegues
@@ -16824,7 +16600,6 @@ toutefois
 toutes
 tout-puissant
 toux
-townships
 toxicomane
 toxicomanes
 toxicomanie
@@ -16835,10 +16610,8 @@ tracasser
 tracasserie
 trace de pas
 tracee
-tract
 tractations
 tracteurs
-tracts
 traditionnel
 traditionnelle
 traditionnellement
@@ -16931,7 +16704,6 @@ transmuter
 transparence
 transpercer
 transpirant
-transpiration
 transpirer
 transportant
 transporte
@@ -16939,8 +16711,6 @@ transporter
 transportes
 transporteur
 transporteurs
-transposer
-transposition
 transvaser
 transvider
 trappe
@@ -17121,7 +16891,6 @@ tunisienne
 turbulences
 turc
 turc turcs
-turnover
 turpitude
 turque
 tutelle
@@ -17544,7 +17313,6 @@ virulente
 visages
 visait
 visant
-vise
 visee
 visees
 visent
@@ -17737,8 +17505,6 @@ zenith
 zezayer
 zigzag
 zigzaguer
-zinc
 zingueur
 zoologie
 zozoter
-zygote
