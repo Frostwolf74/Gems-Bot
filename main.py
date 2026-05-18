@@ -261,10 +261,22 @@ async def on_message(msg: discord.Message):
     if msg.author.bot:
         return
 
-    if len(set(msg.content.split(" ")).intersection(french)) > 0:
+    match = set(msg.content.lower().split(" ")).intersection(french)
+    if len(match) > 0:
         if isinstance(msg.author, discord.Member):
             try:
                 await msg.author.timeout(datetime.timedelta(minutes=1), reason="Speaking french")
+
+                words = ""
+                for i, word in enumerate(match):
+                    words += word
+                    if i < len(match) - 1:
+                        words += ", "
+
+                if len(match) > 1:
+                    await msg.channel.send("\"" + words + "\" are french words, start speaking english or face punishment.")
+                else:
+                    await msg.channel.send("\"" + words + "\" is a french word, start speaking english or face punishment.")
             except discord.Forbidden as e:
                 print("\033[1;33m" + "Cannot timeout user (role hierarchy issue?): " + "\033[0m")
                 print(e)
