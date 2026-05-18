@@ -353,9 +353,9 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
         misc_name = emoji_display_name(top_misc_react)
 
         if misc_key not in misc_dict.keys():
-            message = await gem_channel.send(content=":" + misc_name + ":")
+            message = await gem_channel.send(content=misc_name)
             thread = await message.create_thread(
-                name=":" + misc_name + ":"
+                name=misc_name
             )
             misc_dict.update({misc_key: thread.id})
             serialize_misc_dict(misc_dict, event.guild_id)
