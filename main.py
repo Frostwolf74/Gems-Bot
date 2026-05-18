@@ -353,30 +353,30 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
             )
             misc_dict.update({misc_key: thread.id})
             serialize_misc_dict(misc_dict, event.guild_id)
-        else:
-            thread = await bot.fetch_channel(int(misc_dict.get(misc_key)))
-            msg = await (await bot.fetch_channel(event.channel_id)).fetch_message(event.message_id)
 
-            # Check if this message was already posted in the thread
-            existing_message = None
-            async for message in thread.history(limit=None):
-                if message.author.id == bot.user.id and len(message.embeds) > 0:
-                    # Check if the embed's author matches and the jump link contains the original message ID
-                    embed = message.embeds[0]
-                    if embed.author and embed.author.name == msg.author.display_name:
-                        for field in embed.fields:
-                            if f"({msg.jump_url})" in field.value:
-                                existing_message = message
-                                break
-                    if existing_message:
-                        break
+        thread = await bot.fetch_channel(int(misc_dict.get(misc_key)))
+        msg = await (await bot.fetch_channel(event.channel_id)).fetch_message(event.message_id)
 
-            # If message already exists, edit it with updated reaction count
-            if existing_message:
-                await existing_message.edit(content=f"{top_misc_react} {misc_react_count}")
-                return
+        # Check if this message was already posted in the thread
+        existing_message = None
+        async for message in thread.history(limit=None):
+            if message.author.id == bot.user.id and len(message.embeds) > 0:
+                # Check if the embed's author matches and the jump link contains the original message ID
+                embed = message.embeds[0]
+                if embed.author and embed.author.name == msg.author.display_name:
+                    for field in embed.fields:
+                        if f"({msg.jump_url})" in field.value:
+                            existing_message = message
+                            break
+                if existing_message:
+                    break
 
-            await send_embed(msg=msg, attachment_cloud=attachment_cloud, target_channel=thread, append=f"{top_misc_react} {misc_react_count}")
+        # If message already exists, edit it with updated reaction count
+        if existing_message:
+            await existing_message.edit(content=f"{top_misc_react} {misc_react_count}")
+            return
+
+        await send_embed(msg=msg, attachment_cloud=attachment_cloud, target_channel=thread, append=f"{top_misc_react} {misc_react_count}")
 
         thread_list.append(thread.id)
         serialize_thread_list(thread_list, event.guild_id)
