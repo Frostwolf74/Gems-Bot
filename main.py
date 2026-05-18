@@ -17,6 +17,7 @@ intents = discord.Intents.default()
 client = discord.Client(intents=intents)
 intents.members = True
 intents.message_content = True
+intents.moderation = True
 
 bot = commands.Bot(command_prefix='​', intents=intents)
 
