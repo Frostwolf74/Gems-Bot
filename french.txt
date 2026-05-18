@@ -5541,7 +5541,6 @@ donnes
 donneur
 donneurs
 dons
-dont
 dorage
 dore
 dorenavant
