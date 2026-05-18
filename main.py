@@ -394,6 +394,60 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
 
 
 @bot.event
+async def on_raw_reaction_remove(event: discord.RawReactionActionEvent):
+    msg = await (await bot.fetch_channel(event.channel_id)).fetch_message(event.message_id)
+    global servers
+    misc_react_limit = 3
+
+    # count misc reacts
+    misc_react_count = 0
+    # the emoji itself
+    top_misc_react = ""
+
+    misc_dict = deserialize_misc_dict(event.guild_id)
+
+    for reaction in msg.reactions:
+        if reaction.emoji == "💎":
+            continue
+
+        coal_emoji_id = servers_coal.get(event.guild_id)
+        if coal_emoji_id is not None and coal_emoji_id in str(reaction.emoji):
+            continue
+
+        # any other reaction, get the highest number
+        if reaction.count > misc_react_count:
+            misc_react_count = reaction.count
+            top_misc_react = reaction.emoji
+
+            # users cannot count their own reaction
+            if msg.author.id == event.user_id:
+                misc_react_count -= 1
+
+    if misc_react_count >= misc_react_limit and top_misc_react != "":
+        misc_key = emoji_key(top_misc_react)
+
+        if misc_key in misc_dict.keys():
+            thread = await bot.fetch_channel(int(misc_dict.get(misc_key)))
+
+            # Find the existing message in the thread
+            existing_message = None
+            async for message in thread.history(limit=None):
+                if message.author.id == bot.user.id and len(message.embeds) > 0:
+                    embed = message.embeds[0]
+                    if embed.author and embed.author.name == msg.author.display_name:
+                        for field in embed.fields:
+                            if f"({msg.jump_url})" in field.value:
+                                existing_message = message
+                                break
+                    if existing_message:
+                        break
+
+            # Update the existing message with the new reaction count
+            if existing_message:
+                await existing_message.edit(content=f"{top_misc_react} {misc_react_count}")
+
+
+@bot.event
 async def on_ready():
     print("Syncing command tree")
 
