@@ -24,7 +24,7 @@ bot = commands.Bot(command_prefix='​', intents=intents)
 servers = {}
 servers_coal = {}
 excluded_channels_global = {}
-french = ""
+french = []
 
 gem_board_lock = asyncio.Lock()
 
@@ -260,7 +260,7 @@ async def on_message(msg: discord.Message):
     if msg.author.bot:
         return
 
-    if msg.content in french:
+    if len(set(msg.content.split(" ")).intersection(french)) > 0:
         if isinstance(msg.author, discord.Member):
             await msg.author.timeout(datetime.timedelta(minutes=1), reason="Speaking french")
 
@@ -435,7 +435,8 @@ async def on_ready():
                 excluded_channels_global = ast.literal_eval(read)
 
     with open("french.txt", "r") as f:
-        french = f.readlines()
+        for line in f.readlines():
+            french.append(line.strip())
 
     print("\nReady in:")
     for guild in bot.guilds:
