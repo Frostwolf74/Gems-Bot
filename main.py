@@ -1,4 +1,5 @@
 import ast
+import datetime
 import os
 import re
 import signal
@@ -23,6 +24,7 @@ bot = commands.Bot(command_prefix='​', intents=intents)
 servers = {}
 servers_coal = {}
 excluded_channels_global = {}
+french = ""
 
 gem_board_lock = asyncio.Lock()
 
@@ -254,6 +256,16 @@ async def set_excluded_channels(interaction: discord.Interaction, channel: disco
 
 
 @bot.event
+async def on_message(msg: discord.Message):
+    if msg.author.bot:
+        return
+
+    if msg.content in french:
+        if isinstance(msg.author, discord.Member):
+            await msg.author.timeout(datetime.timedelta(minutes=1), reason="Speaking french")
+
+
+@bot.event
 async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
     msg = await (await bot.fetch_channel(event.channel_id)).fetch_message(event.message_id)
     global servers
@@ -390,10 +402,11 @@ async def on_ready():
     for command in bot.tree.get_commands():
         print(command.name)
 
-    print("\nSyncing servers")
+    print("\nSyncing local files with buffer")
     global servers
     global servers_coal
     global excluded_channels_global
+    global french
 
     if "servers.txt" not in os.listdir(os.getcwd()):
         open("servers.txt", "w").close()
@@ -420,6 +433,9 @@ async def on_ready():
             read = excluded_channels_file.read()
             if read != "":
                 excluded_channels_global = ast.literal_eval(read)
+
+    with open("french.txt", "r") as f:
+        french = f.readlines()
 
     print("\nReady in:")
     for guild in bot.guilds:
