@@ -137,6 +137,7 @@ async def send_embed(msg: discord.Message, attachment_cloud: discord.TextChannel
 
     # check if there are attachments
     if len(msg.attachments) > 0:
+        # if its a video
         if msg.attachments[0].content_type == "video/mp4" or msg.attachments[0].content_type == "video/quicktime" or msg.attachments[0].content_type == "video/webm":  # quicktime = mov
             files = []
             for attachment in msg.attachments:
@@ -150,6 +151,7 @@ async def send_embed(msg: discord.Message, attachment_cloud: discord.TextChannel
                 file.spoiler = attachment.is_spoiler()
                 files1.append(file)
 
+            embed.add_field(name="", value=f"-# [jump to message]({msg.jump_url})", inline=False)
             try:
                 await target_channel.send(files=files1, embed=embed)
             except discord.errors.HTTPException:  # file too big, send attachment link instead
@@ -157,16 +159,15 @@ async def send_embed(msg: discord.Message, attachment_cloud: discord.TextChannel
                 for attachment in msg.attachments:
                     attachments += attachment.url + "\n"
 
-                await target_channel.send(attachments)
+                await target_channel.send(attachments, embed=embed)
             return  # avoid sending embed again
-        else:
+        else: # if its an image
             cloud_message = await attachment_cloud.send(file=await msg.attachments[0].to_file())
             embed.set_image(url=cloud_message.attachments[0].url)
     elif is_gif:  # would be a link
-        await target_channel.send(content=msg.content)
+        embed.add_field(name="", value=f"-# [jump to message]({msg.jump_url})", inline=False)
+        await target_channel.send(content=msg.content, embed=embed)
         return
-    elif is_image:  # would also be a link
-        embed.set_image(url=msg.content)
 
     embed.add_field(name="", value=f"-# [jump to message]({msg.jump_url})", inline=False)
 
