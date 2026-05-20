@@ -166,7 +166,8 @@ async def send_embed(msg: discord.Message, attachment_cloud: discord.TextChannel
             embed.set_image(url=cloud_message.attachments[0].url)
     elif is_gif:  # would be a link
         embed.add_field(name="", value=f"-# [jump to message]({msg.jump_url})", inline=False)
-        await target_channel.send(content=msg.content, embed=embed)
+        await target_channel.send(embed=embed)
+        await target_channel.send(content=msg.content)
         return
 
     embed.add_field(name="", value=f"-# [jump to message]({msg.jump_url})", inline=False)
