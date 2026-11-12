@@ -142,6 +142,8 @@ async def send_embed(msg: discord.Message, attachment_cloud: discord.TextChannel
 
     print("[EMBED] is_gif = " + str(is_gif))
     print("[EMBED] is_image = " + str(is_image))
+    print("[EMBED] is_video = " + str(is_video))
+    print("[EMBED] is_xitter_post" + str(is_xitter_post))
 
     # check if there is text
     if len(msg.content) > 0 and not is_gif and not is_image:
