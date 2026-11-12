@@ -124,6 +124,14 @@ async def send_embed(msg: discord.Message, attachment_cloud: discord.TextChannel
         r'http(s)?:\/\/klipy\.com\/gifs\/[\w-]+',
     ]
 
+    video_patterns = [
+        r'http(s)?:\/\/cdn\.discordapp\.com\/attachments\/[\w-]+\/[\w-]+\/[\w-]+\.(mov|webm|mp4)'
+    ]
+
+    twitter_post_patterns = [
+        r'http(s)?:\/\/(x|fxtwitter|fixupx|vxtwitter)\.com\/[\w-]+\/status\/[\w-]+'
+    ]
+
     is_gif = False
     is_image = fetch_check(msg.content)
 
