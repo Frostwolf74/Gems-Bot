@@ -120,7 +120,8 @@ async def send_embed(msg: discord.Message, attachment_cloud: discord.TextChannel
         r'https?://(?:www\.)?tenor\.com/view/[\w-]+',
         r'https?://(?:www\.)?gfycat\.com/[\w-]+',
         r'https?://media\d?\.giphy\.com/media/[\w-]+/giphy\.gif',
-        r'.*\.gif(?:$|\?.*)'
+        r'.*\.gif(?:$|\?.*)',
+        r'http(s)?:\/\/klipy\.com\/gifs\/[\w-]+',
     ]
 
     is_gif = False
