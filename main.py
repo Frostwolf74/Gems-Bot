@@ -202,6 +202,7 @@ async def send_embed(msg: discord.Message, attachment_cloud: discord.TextChannel
                 files1.append(file)
 
             embed.add_field(name="", value=f"-# [jump to message]({msg.jump_url})", inline=False)
+            embed.set_footer(text="↑")
             try:
                 await target_channel.send(files=files1, embed=embed)
             except discord.errors.HTTPException:  # file too big, send attachment link instead
@@ -226,6 +227,7 @@ async def send_embed(msg: discord.Message, attachment_cloud: discord.TextChannel
                     video_buffer.write(chunk)
                 video_buffer.seek(0)
 
+                embed.set_footer(text="↑")
                 await target_channel.send(file=discord.File(fp=video_buffer, filename="video.mp4"))
     elif is_gif or is_sm_post:  # would be a link, should just be sent raw
         embed.add_field(name="", value=f"-# [jump to message]({msg.jump_url})", inline=False)
@@ -245,9 +247,12 @@ async def send_embed(msg: discord.Message, attachment_cloud: discord.TextChannel
                     image_buffer.write(chunk)
                 image_buffer.seek(0)
 
-                await target_channel.send(file=discord.File(fp=image_buffer, filename="image.png"))
+                embed.add_field(name="", value=f"-# [jump to message]({msg.jump_url})", inline=False)
+                message = await attachment_cloud.send(file=discord.File(fp=image_buffer, filename="image.png"))
+                embed.set_image(url=message.attachments[0])
+                await target_channel.send(embed=embed)
+        return
 
-    embed.set_footer(text="↑")
     embed.add_field(name="", value=f"-# [jump to message]({msg.jump_url})", inline=False)
 
     if append != "":
