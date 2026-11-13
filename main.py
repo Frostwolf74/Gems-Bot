@@ -142,12 +142,14 @@ async def send_embed(msg: discord.Message, attachment_cloud: discord.TextChannel
     is_video = False
     is_sm_post = False
 
+    gif_link = ""
     video_link = ""
     sm_post_link = ""
 
     for pattern in gif_patterns:
         if re.search(pattern, msg.content):
             is_gif = True
+            gif_link = re.search(pattern, msg.content).group(0)
             break
 
     for pattern in video_patterns:
@@ -218,10 +220,12 @@ async def send_embed(msg: discord.Message, attachment_cloud: discord.TextChannel
                 await target_channel.send(file=discord.File(fp=video_buffer, filename="video.mp4"))
     elif is_gif or is_sm_post:  # would be a link, should just be sent raw
         embed.add_field(name="", value=f"-# [jump to message]({msg.jump_url})", inline=False)
+        embed.set_footer(text="↓")
         await target_channel.send(embed=embed)
-        await target_channel.send(content=sm_post_link)
+        await target_channel.send(content=sm_post_link or gif_link)
         return
 
+    embed.set_footer(text="↑")
     embed.add_field(name="", value=f"-# [jump to message]({msg.jump_url})", inline=False)
 
     if append != "":
