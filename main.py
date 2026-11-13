@@ -1,9 +1,11 @@
 import ast
 import datetime
+import io
 import os
 import re
 import signal
 
+import aiohttp
 import requests
 import discord
 import asyncio
@@ -116,38 +118,61 @@ async def send_embed(msg: discord.Message, attachment_cloud: discord.TextChannel
 
     embed.set_author(name=msg.author.display_name, icon_url=msg.author.avatar)
 
+    # patterns for links only
     gif_patterns = [
         r'https?://(?:www\.)?tenor\.com/view/[\w-]+',
         r'https?://(?:www\.)?gfycat\.com/[\w-]+',
         r'https?://media\d?\.giphy\.com/media/[\w-]+/giphy\.gif',
         r'.*\.gif(?:$|\?.*)',
-        r'http(s)?:\/\/klipy\.com\/gifs\/[\w-]+',
+        r'http(s)?:\/\/klipy\.com\/gifs\/[\w-]+'
     ]
 
     video_patterns = [
-        r'http(s)?:\/\/cdn\.discordapp\.com\/attachments\/[\w-]+\/[\w-]+\/[\w-]+\.(mov|webm|mp4)'
+        r'http(s)?:\/\/cdn\.discordapp\.com\/attachments\/[\w-]+\/[\w-]+\/[\w-]+\.(mov|webm|mp4)\?[\S-]+'
     ]
 
-    twitter_post_patterns = [
-        r'http(s)?:\/\/(x|fxtwitter|fixupx|vxtwitter)\.com\/[\w-]+\/status\/[\w-]+'
+    sm_post_patterns = [
+        r'http(s)?:\/\/(www\.|)(x|fxtwitter|fixupx|vxtwitter|girlcockx)\.com\/[\w-]+\/status\/[\S-]+',
+        r'http(s)?:\/\/(www\.|)(instagram|vxinstagram|kkinstagram)\.com\/reel\/[\S-]+',
+        r'http(s)?:\/\/(www\.|music\.|)(youtu\.be|youtube\.com)\/(watch\?v=|)[\S-]+'
     ]
 
     is_gif = False
     is_image = fetch_check(msg.content)
+    is_video = False
+    is_sm_post = False
+
+    video_link = ""
+    sm_post_link = ""
 
     for pattern in gif_patterns:
         if re.search(pattern, msg.content):
             is_gif = True
             break
 
+    for pattern in video_patterns:
+        if re.search(pattern, msg.content):
+            is_video = True
+            video_link = re.search(pattern, msg.content).group(0)
+            break
+
+    for pattern in sm_post_patterns:
+        if re.search(pattern, msg.content):
+            is_sm_post = True
+            sm_post_link = re.search(pattern, msg.content).group(0)
+            break
+
     print("[EMBED] is_gif = " + str(is_gif))
     print("[EMBED] is_image = " + str(is_image))
     print("[EMBED] is_video = " + str(is_video))
-    print("[EMBED] is_xitter_post" + str(is_xitter_post))
+    print("[EMBED] is_sm_post = " + str(is_sm_post))
 
     # check if there is text
     if len(msg.content) > 0 and not is_gif and not is_image:
-        embed.add_field(name="", value=msg.content)
+        if is_video or is_sm_post:
+            embed.add_field(name="", value=msg.content.replace(video_link if video_link != "" else sm_post_link, ""))
+        else:
+            embed.add_field(name="", value=msg.content)
 
     # check if there are attachments
     if len(msg.attachments) > 0:
@@ -178,10 +203,23 @@ async def send_embed(msg: discord.Message, attachment_cloud: discord.TextChannel
         else: # if its an image
             cloud_message = await attachment_cloud.send(file=await msg.attachments[0].to_file())
             embed.set_image(url=cloud_message.attachments[0].url)
-    elif is_gif:  # would be a link
+    elif is_video: # special video links that can be fetched from a cdn
+        async with aiohttp.ClientSession() as session:
+            async with session.get(sm_post_link if sm_post_link != "" else video_link) as response:
+                if response.status != 200:
+                    print("ERROR " + str(response.status))
+                    return
+
+                video_buffer = io.BytesIO()
+                async for chunk in response.content.iter_chunked(8192):
+                    video_buffer.write(chunk)
+                video_buffer.seek(0)
+
+                await target_channel.send(file=discord.File(fp=video_buffer, filename="video.mp4"))
+    elif is_gif or is_sm_post:  # would be a link, should just be sent raw
         embed.add_field(name="", value=f"-# [jump to message]({msg.jump_url})", inline=False)
         await target_channel.send(embed=embed)
-        await target_channel.send(content=msg.content)
+        await target_channel.send(content=sm_post_link)
         return
 
     embed.add_field(name="", value=f"-# [jump to message]({msg.jump_url})", inline=False)
@@ -263,6 +301,7 @@ async def set_excluded_channels(interaction: discord.Interaction, channel: disco
         except ValueError: # if the file exists but the guild id is not in it
             excluded_channels_from_file.update({interaction.guild.id: [channel.id]})
 
+    # sync buffer with file
     global excluded_channels_global
     excluded_channels_global = excluded_channels_from_file
 
@@ -313,7 +352,7 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
     pin_react_limit = 5
     misc_react_limit = 3
     global excluded_channels_global
-    excluded_channels = excluded_channels_global.get(event.guild_id)
+    excluded_channels = excluded_channels_global.get(event.guild_id) if excluded_channels_global.get(event.guild_id) is not None else []
     global servers_coal
     coal_emoji_id = servers_coal.get(event.guild_id)
 
