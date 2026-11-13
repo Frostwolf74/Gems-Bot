@@ -131,6 +131,10 @@ async def send_embed(msg: discord.Message, attachment_cloud: discord.TextChannel
         r'http(s)?:\/\/cdn\.discordapp\.com\/attachments\/[\w-]+\/[\w-]+\/[\w-]+\.(mov|webm|mp4)\?[\S-]+'
     ]
 
+    image_patterns = [
+        r'http(s)?:\/\/cdn\.discordapp\.com\/attachments\/[\w-]+\/[\w-]+\/[\w-]+\.(png|jpg)[\S-]+'
+    ]
+
     sm_post_patterns = [
         r'http(s)?:\/\/(www\.|)(x|fxtwitter|fixupx|vxtwitter|girlcockx)\.com\/[\w-]+\/status\/[\S-]+',
         r'http(s)?:\/\/(www\.|)(instagram|vxinstagram|kkinstagram)\.com\/reel\/[\S-]+',
@@ -145,6 +149,7 @@ async def send_embed(msg: discord.Message, attachment_cloud: discord.TextChannel
     gif_link = ""
     video_link = ""
     sm_post_link = ""
+    image_link = ""
 
     for pattern in gif_patterns:
         if re.search(pattern, msg.content):
@@ -163,6 +168,10 @@ async def send_embed(msg: discord.Message, attachment_cloud: discord.TextChannel
             is_sm_post = True
             sm_post_link = re.search(pattern, msg.content).group(0)
             break
+
+    for pattern in image_patterns:
+        if re.search(pattern, msg.content):
+            image_link = re.search(pattern, msg.content).group(0)
 
     print("[EMBED] is_gif = " + str(is_gif))
     print("[EMBED] is_image = " + str(is_image))
@@ -224,6 +233,19 @@ async def send_embed(msg: discord.Message, attachment_cloud: discord.TextChannel
         await target_channel.send(embed=embed)
         await target_channel.send(content=sm_post_link or gif_link)
         return
+    elif is_image:
+        async with aiohttp.ClientSession() as session:
+            async with session.get(image_link) as response:
+                if response.status != 200:
+                    print("ERROR " + str(response.status))
+                    return
+
+                image_buffer = io.BytesIO()
+                async for chunk in response.content.iter_chunked(8192):
+                    image_buffer.write(chunk)
+                image_buffer.seek(0)
+
+                await target_channel.send(file=discord.File(fp=image_buffer, filename="image.png"))
 
     embed.set_footer(text="↑")
     embed.add_field(name="", value=f"-# [jump to message]({msg.jump_url})", inline=False)
