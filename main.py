@@ -419,8 +419,8 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
             gem_react_count = reaction.count
 
             # users cannot count their own reaction
-            # if msg.author == event.member:
-            #     gem_react_count -= 1
+            if msg.author == event.member:
+                gem_react_count -= 1
             break
 
         if coal_emoji_id is not None and coal_emoji_id in str(reaction.emoji):
