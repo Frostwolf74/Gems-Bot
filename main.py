@@ -195,12 +195,6 @@ async def send_embed(msg: discord.Message, attachment_cloud: discord.TextChannel
                 file.spoiler = attachment.is_spoiler()
                 files.append(file)
 
-            files1 = []
-            for attachment in msg.attachments:
-                file = await attachment.to_file()
-                file.spoiler = attachment.is_spoiler()
-                files1.append(file)
-
             embed.add_field(name="", value=f"-# [jump to message]({msg.jump_url})", inline=False)
             embed.set_footer(text="↑")
             try:
