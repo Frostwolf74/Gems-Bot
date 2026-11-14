@@ -9,6 +9,7 @@ import aiohttp
 import requests
 import discord
 import asyncio
+from PIL import Image
 from dotenv import load_dotenv
 from discord.ext import commands
 
@@ -197,8 +198,28 @@ async def send_embed(msg: discord.Message, attachment_cloud: discord.TextChannel
 
             embed.add_field(name="", value=f"-# [jump to message]({msg.jump_url})", inline=False)
             embed.set_footer(text="↑")
+
+            # jank but creative way of forcing embed width
+            if msg.attachments[0].width is not None and msg.attachments[0].height is not None:
+                # discord displays only max of 550x350 videos and they are resized while maintaining aspect ratio
+                scale = min(550 / int(msg.attachments[0].width), 350 / int(msg.attachments[0].height), 1.0)
+                attachment_width = round(int(msg.attachments[0].width) * scale)
+
+                print("[EMBED] fake image width is: " + str(attachment_width))
+                print("[EMBED] post-resize fake image width is: " + str(attachment_width-12-16))
+
+                # remove 12 px and 16 px of padding on sides of embed added by discord
+                fake_img = Image.new('RGBA', (attachment_width-12-16, 1), (0, 0, 0, 0))
+
+                with io.BytesIO() as image_binary:
+                    fake_img.save(image_binary, 'PNG')
+                    image_binary.seek(0)
+                    fake_img_link = await attachment_cloud.send(file=discord.File(fp=image_binary, filename=f'image-{msg.attachments[0].width}.png'))
+
+                embed.set_image(url=fake_img_link.attachments[0].url)
+
             try:
-                await target_channel.send(files=files1, embed=embed)
+                await target_channel.send(files=files, embed=embed)
             except discord.errors.HTTPException:  # file too big, send attachment link instead
                 attachments = ""
                 for attachment in msg.attachments:
@@ -398,8 +419,8 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
             gem_react_count = reaction.count
 
             # users cannot count their own reaction
-            if msg.author == event.member:
-                gem_react_count -= 1
+            # if msg.author == event.member:
+            #     gem_react_count -= 1
             break
 
         if coal_emoji_id is not None and coal_emoji_id in str(reaction.emoji):
@@ -547,13 +568,27 @@ async def on_raw_reaction_remove(event: discord.RawReactionActionEvent):
 
 @bot.event
 async def on_ready():
-    print("Syncing command tree")
+    # print("Syncing command tree")
 
-    await bot.tree.sync()
-    for command in bot.commands:
-        print(command.name)
-    for command in bot.tree.get_commands():
-        print(command.name)
+    # await bot.tree.sync()
+    # for command in bot.commands:
+    #     print(command.name)
+    # for command in bot.tree.get_commands():
+    #     print(command.name)
+
+    try:
+        print("\nSyncing command tree:")
+
+        tree_commands = await asyncio.wait_for(bot.tree.sync(), timeout=10.0)
+
+        if len(tree_commands) < 1:
+            print("\033[1;33m" + "WARNING: No commands were synced." + "\033[0m")
+        for command in tree_commands:
+            print(command.name)
+    except asyncio.TimeoutError:
+        print("Could not sync commands: Command tree sync timed out after waiting for 10 seconds")
+    except Exception as e:
+        print("Could not sync commands:", e)
 
     print("\nSyncing local files with buffer")
     global servers
