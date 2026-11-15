@@ -129,11 +129,11 @@ async def send_embed(msg: discord.Message, attachment_cloud: discord.TextChannel
     ]
 
     video_patterns = [
-        r'http(s)?:\/\/cdn\.discordapp\.com\/attachments\/[\w-]+\/[\w-]+\/[\w-]+\.(mov|webm|mp4)\?[\S-]+'
+        r'http(s)?:\/\/cdn\.discordapp\.com\/attachments\/[\S-]+\/[\S-]+\/[\S-]+\.(mov|webm|mp4)\?[\S-]+'
     ]
 
     image_patterns = [
-        r'http(s)?:\/\/cdn\.discordapp\.com\/attachments\/[\w-]+\/[\w-]+\/[\w-]+\.(png|jpg)[\S-]+'
+        r'http(s)?:\/\/cdn\.discordapp\.com\/attachments\/[\S-]+\/[\S-]+\/[\S-]+\.(png|jpg)[\S-]+'
     ]
 
     sm_post_patterns = [
