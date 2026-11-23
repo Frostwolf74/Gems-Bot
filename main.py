@@ -463,6 +463,7 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
     if gem_react_count >= gem_limit and msg.channel.id not in excluded_channels and msg.id and msg.author.id != bot.user.id:
         global gem_board_lock # prevents parallel instances in the event that a post is reacted to by two different users at the same time
         async with gem_board_lock:
+            print("current top gem: " + str(top_gem))
             gem_list = deserialize_gem_list(event.guild_id)
             if msg.id not in gem_list:
                 print(str(msg.id) + " added to gem board | gems: " + str(gem_react_count) + " | short id: " + str(msg.id)[0] + str(msg.id)[1] + str(msg.id)[len(str(msg.id)) - 2] + str(msg.id)[len(str(msg.id)) - 1])
