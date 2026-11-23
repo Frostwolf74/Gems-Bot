@@ -29,14 +29,17 @@ servers = {}
 servers_coal = {}
 excluded_channels_global = {}
 french = []
+top_gem = 0
 
 gem_board_lock = asyncio.Lock()
 
 
-def serialize_gem_list(gem_list, server_id):
+def serialize_gem_list(gem_list, server_id, top_gem):
     with open("gem_board-" + str(server_id) + ".txt", "w") as f:
         for msg_id in gem_list:
             f.write(str(msg_id) + "\n")
+    with open("top_gem-" + str(server_id) + ".txt", "w") as f:
+        f.write(str(top_gem))
 
 
 def deserialize_gem_list(server_id):
@@ -45,6 +48,14 @@ def deserialize_gem_list(server_id):
             return [int(line.strip()) for line in f.readlines()]
     except FileNotFoundError:
         return []
+
+
+def get_top_gem(server_id) -> int:
+    try:
+        with open("top_gem-" + str(server_id) + ".txt", "r") as f:
+            return int(f.readline().strip())
+    except FileNotFoundError:
+        return 0
 
 
 def serialize_pinned_list(pinned_list, server_id):
@@ -397,10 +408,12 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
     coal_limit = 5
     pin_react_limit = 5
     misc_react_limit = 3
+    global top_gem
     global excluded_channels_global
     excluded_channels = excluded_channels_global.get(event.guild_id) if excluded_channels_global.get(event.guild_id) is not None else []
     global servers_coal
     coal_emoji_id = servers_coal.get(event.guild_id)
+    current_channel = bot.get_channel(event.channel_id)
 
     # count coal reacts
     react_count = 0
@@ -443,7 +456,7 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
     # prevent it from deleting from important channels
     if react_count >= coal_limit and msg.channel.id not in excluded_channels:
         print(str(msg.id) + " deleted | coals: " + str(react_count) + " | short id: " + str(msg.id)[0] + str(msg.id)[1])
-        await msg.channel.send("HWABAG or some sh", reference=msg)
+        await current_channel.send("HWABAG or some sh", reference=msg)
         await msg.delete()
 
     if gem_react_count >= gem_limit and msg.channel.id not in excluded_channels and msg.id and msg.author.id != bot.user.id:
@@ -453,11 +466,15 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
             if msg.id not in gem_list:
                 print(str(msg.id) + " added to gem board | gems: " + str(gem_react_count) + " | short id: " + str(msg.id)[0] + str(msg.id)[1] + str(msg.id)[len(str(msg.id)) - 2] + str(msg.id)[len(str(msg.id)) - 1])
 
-                current_channel = bot.get_channel(event.channel_id)
-
                 await send_embed(msg, attachment_cloud, gem_channel)
                 gem_list.append(msg.id)
-                serialize_gem_list(gem_list, event.guild_id)
+
+                if gem_react_count > top_gem:
+                    top_gem = gem_react_count
+
+                    print("top gem count: " + str(top_gem))
+                    await current_channel.send("Top gem OAT ! ! !", reference=msg)
+                serialize_gem_list(gem_list, event.guild_id, top_gem)
 
     if misc_react_count >= misc_react_limit:
         thread_list = deserialize_thread_list(event.guild_id)
