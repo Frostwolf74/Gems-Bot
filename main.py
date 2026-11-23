@@ -409,6 +409,7 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
     pin_react_limit = 5
     misc_react_limit = 3
     global top_gem
+    top_gem = get_top_gem(event.guild_id)
     global excluded_channels_global
     excluded_channels = excluded_channels_global.get(event.guild_id) if excluded_channels_global.get(event.guild_id) is not None else []
     global servers_coal
@@ -468,12 +469,13 @@ async def on_raw_reaction_add(event: discord.RawReactionActionEvent):
 
                 await send_embed(msg, attachment_cloud, gem_channel)
                 gem_list.append(msg.id)
+                serialize_gem_list(gem_list, event.guild_id, top_gem)
 
-                if gem_react_count > top_gem:
-                    top_gem = gem_react_count
+            if gem_react_count > top_gem:
+                top_gem = gem_react_count
 
-                    print("top gem count: " + str(top_gem))
-                    await current_channel.send("Top gem OAT ! ! !", reference=msg)
+                print("top gem count increased: " + str(top_gem))
+                await current_channel.send("Top gem OAT ! ! !", reference=msg)
                 serialize_gem_list(gem_list, event.guild_id, top_gem)
 
     if misc_react_count >= misc_react_limit:
